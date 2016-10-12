@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{msg['newscreen.title']}
+				<small>#{msg['newscreen.title']}</small></h3>
+			</div>
+		</div>			
+			
+		<div class="table">
+			<p:menubar>
+				<p:menuitem value="#{msg['general.save']}" actionListener="#{screensCtrl.saveScreen}" icon="ui-icon-disk" oncomplete="wiz.loadStep(wiz.cfg.steps [0], true)" update="@form"  />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="screens" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:wizard backLabel="#{msg['general.previous']}" widgetVar="wiz" nextLabel="#{msg['general.next']}" title="#{msg['newscreen.new.screen']}" flowListener="#{screensCtrl.initialize}">
+				<p:tab id="generalscreen" title="#{msg['newscreen.general.infos']}">
+					<p:fieldset>
+					<p:panelGrid columns="2" style="width:100%">
+						<p:outputLabel value="#{msg['newscreen.label.functionality']}" />
+						<p:selectOneMenu value="#{screensCtrl.selectedFunction}" id="fonctionalite" effect="fade" style="width:160px;">
+								<f:selectItems value="#{screensCtrl.functions}" var="ett" itemLabel="#{ett.title}" itemValue="#{ett.title}"  ></f:selectItems>
+						</p:selectOneMenu>
+						<p:outputLabel value="#{msg['newscreen.label.title']}" ></p:outputLabel>
+						<p:inputText id="screenTitle" value="#{screensCtrl.screenTitle}" style="width:155px;"></p:inputText>
+						<p:outputLabel value="#{msg['newscreen.label.description']}" ></p:outputLabel>
+						<p:inputTextarea id="screenDescription" value="#{screensCtrl.screenDescription}" style="width:155px;"></p:inputTextarea>
+						<p:outputLabel value="#{msg['newscreen.label.principal.entity']}"  />
+						<p:selectOneMenu value="#{screensCtrl.selectedEntity}" id="mainentity" effect="fade" style="width:160px;">
+							<f:selectItems value="#{screensCtrl.entities}" var="ent" itemLabel="#{ent.name}" itemValue="#{ent.dataReference}"  ></f:selectItems>
+						</p:selectOneMenu>
+						<p:outputLabel value="#{msg['newscreen.label.type']}" />
+						<p:selectOneMenu value="#{screensCtrl.screenType}" id="screentype" effect="fade" style="width:160px;">
+							<f:selectItem itemValue="1" itemLabel="#{msg['newscreen.item.grid.view']}" />
+							<f:selectItem itemValue="2" itemLabel="#{msg['newscreen.item.form.view']}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="#{msg['newscreen.label.modification']}" />
+						<p:selectBooleanCheckbox value="#{screensCtrl.updateBtn}" />
+						<p:outputLabel value="#{msg['newscreen.label.suppression']}" />
+						<p:selectBooleanCheckbox value="#{screensCtrl.deleteBtn}" />
+						
+					</p:panelGrid>
+					</p:fieldset>
+				</p:tab>		
+				<p:tab id="entities" title="#{msg['newscreen.tab.data']}">
+					<p:fieldset>
+					<p:treeTable value="#{screensCtrl.root}" var="attrib">
+						<p:column headerText="#{msg['newscreen.column.fields']}">
+							<p:outputLabel value="#{attrib.name}"/>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.reference']}">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:selectBooleanCheckbox value="#{attrib.reference}">
+										<p:ajax update="isreference"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</f:facet>
+								<f:facet name="output"><p:outputLabel id="isreference" value=""/></f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.visible']}">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:selectBooleanCheckbox value="#{attrib.visible}">
+										<p:ajax update="isvisible"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</f:facet>
+								<f:facet name="output"><p:outputLabel id="isvisible" value=""/></f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.recall']}">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:selectBooleanCheckbox value="#{attrib.rappel}">
+										<p:ajax update="rappel"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</f:facet>
+								<f:facet name="output"><p:outputLabel id="rappel" value=""/></f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.filter']}">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:selectBooleanCheckbox value="#{attrib.filterEnabled}">
+										<p:ajax update="filterenabled"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</f:facet>
+								<f:facet name="output"><p:outputLabel id="filterenabled" value=""/></f:facet>
+							</p:cellEditor>
+						</p:column>
+					</p:treeTable>
+					<p:panelGrid columns="2">
+						<p:outputLabel  value="#{msg['newscreen.label.reference.recall']}" />
+						<p:selectOneMenu value="#{screensCtrl.selectedRappelReference}" id="rappelreference" effect="fade" style="width:160px;">
+								<f:selectItem itemLabel="#{msg['newscreen.item.no.recall']}" itemValue="NONE" />
+								<f:selectItems value="#{screensCtrl.attributeReferences}" var="rap" itemLabel="#{rap.attribute}" itemValue="#{rap.dataReference}"  ></f:selectItems>
+						</p:selectOneMenu>
+					</p:panelGrid>
+					
+					</p:fieldset>
+				</p:tab>	
+				<p:tab id="crossreference" title="#{msg['newscreen.tab.cross.tables']}">
+					<p:fieldset>
+					<p:treeTable value="#{screensCtrl.crRoot}" var="cra">
+						<p:column headerText="#{msg['newscreen.column.fields']}">
+							<p:outputLabel value="#{cra.name}"/>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.reference']}">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:selectBooleanCheckbox value="#{cra.reference}">
+										<p:ajax update="craisreference"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</f:facet>
+								<f:facet name="output"><p:outputLabel id="craisreference" value=""/></f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.visible']}">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:selectBooleanCheckbox value="#{cra.visible}">
+										<p:ajax update="craisvisible"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</f:facet>
+								<f:facet name="output"><p:outputLabel id="craisvisible" value=""/></f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.filter']}">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:selectBooleanCheckbox value="#{cra.filterEnabled}">
+										<p:ajax update="crosfilterenabled"></p:ajax>
+									</p:selectBooleanCheckbox>
+								</f:facet>
+								<f:facet name="output"><p:outputLabel id="crosfilterenabled" value=""/></f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="#{msg['newscreen.column.function']}">
+							
+							<p:selectOneMenu value="#{cra.indirectFunction}" >
+								<f:selectItem itemLabel="#{msg['newscreen.item.single']}" itemValue="1" />
+								<f:selectItem itemLabel="#{msg['newscreen.item.multiple']}" itemValue="2" />
+								<f:selectItem itemLabel="#{msg['newscreen.item.sum']}" itemValue="3" />
+								<f:selectItem itemLabel="#{msg['newscreen.item.multiplication']}" itemValue="4" />
+								<f:selectItem itemLabel="#{msg['newscreen.item.count']}" itemValue="5" />
+							</p:selectOneMenu>
+						
+						</p:column>
+					</p:treeTable>
+					</p:fieldset>
+				</p:tab>
+				<p:tab id="locktab" title="#{msg['newscreen.tab.filtrage']}">
+					<p:panelGrid id="filtermandagrid" columns="2" style="width:100%">
+						<p:outputLabel value="#{msg['newscreen.label.mandatory.filtering']}" />
+						<p:selectBooleanCheckbox id="islocked" value="#{screensCtrl.screenLock}" />
+						<p:outputLabel value="#{msg['newscreen.label.mandatory.filters']}" />
+						<p:selectCheckboxMenu id="mandafilters" label="#{msg['newscreen.label.filters']}" value="#{screensCtrl.selectedFilters}" filter="true" filterText="Filter" filterMatchMode="contains" panelStyle="width:370px" >
+							<f:selectItems value="#{screensCtrl.filters}" />
+						</p:selectCheckboxMenu>
+					</p:panelGrid>
+				</p:tab>
+				<p:tab id="select_constraint" title="Contraintes" >
+					<p:panel>
+						<h:inputTextarea value="#{screensCtrl.selectConstraint}" rows="10" style="width:98%"/>
+					</p:panel>
+				</p:tab>
+				<p:tab id="orderfields" title="#{msg['newscreen.sort.fileds']}">
+					<p:fieldset>
+						<p:orderList value="#{screensCtrl.visibleFields}" var="fld" controlsLocation="none"
+							itemLabel="#{fld}" itemValue="#{fld}" />
+					</p:fieldset>
+				</p:tab>
+			</p:wizard>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s4.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez créer un écran <br />
+		La première étape consiste à déterminer certains paramétres de l'écran comme son type et sa description. 
+		</div>
+		<div class="box">
+		La seconde étape consiste en l'affectation des champs visibles sur l'écran. En notant une entitée comme référence elle ne sera pa modifiable s'il s'agit d'un formulaire, 
+		par contre elle s'affichera sous forme d'une liste déroulante 
+		</div>
+		<br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.windows}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" /> 
+		</div>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+</html>

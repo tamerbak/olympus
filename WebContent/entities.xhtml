@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+	
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{entitiesCtrl.stepTitle}
+				<small>#{entitiesCtrl.stepDescription}</small></h3>
+			</div>
+			<p:commandLink action="#{entitiesCtrl.generateDiagram}" ajax="false" >class diagram</p:commandLink>
+			<p:commandLink action="#{diagramEditor.workflowEditor}" ajax="false" >wf diagram</p:commandLink>
+		</div>		
+			<p:dialog id="dlg2" closable="false" widgetVar="dlg2" modal="false" resizable="false" dynamic="false" style="width: 300px;" > 
+				<h:panelGrid columns="3" style="width:100%">
+				<p:graphicImage value="/img/loading.gif" />
+				<p:spacer width="20" height="10" />
+				<p:outputLabel>#{msg['entities.loading']}</p:outputLabel>
+				</h:panelGrid>
+				
+			</p:dialog>
+			<p:menubar>
+				<p:menuitem value="#{msg['entities.add.entity']}" actionListener="#{entitiesCtrl.add}" update="@form" icon="ui-icon-plusthick" onstart="dlg2.show();" oncomplete="dlg2.hide();" />
+				<p:menuitem value="#{msg['entities.add.fields']}" actionListener="#{entitiesCtrl.addAttrib}" update=":form:calculus" icon="ui-icon-plusthick" onstart="dlg2.show();" oncomplete="dlg2.hide();" />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="#{entitiesCtrl.next}" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<div class="table">
+			<p:wizard widgetVar="wiz" title="#{msg['entities.business.entity']}" nextLabel="#{msg['general.next']}" backLabel="#{msg['general.previous']}" flowListener="#{entitiesCtrl.wzflowListener}"
+				onnext="dlg2.show();" onback="dlg2.show();">
+				<p:tab id="entDefine" title="#{msg['entities.entities.definition']}">
+			<p:fieldset legend="#{msg['entities.new.entity']}">
+			<p:panelGrid style="width:100%">
+					<p:row>
+						<p:column>#{msg['entities.column.title']}</p:column>
+						<p:column><p:inputText value="#{entitiesCtrl.title}"></p:inputText></p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.description']}</p:column>
+						<p:column><p:inputTextarea value="#{entitiesCtrl.description}"></p:inputTextarea>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.user.restriction']}</p:column>
+						<p:column>
+							<p:selectOneMenu value="#{entitiesCtrl.userRestrict}">
+								<f:selectItem itemLabel="#{msg['entities.column.no.restriction']}" itemValue="N"/>
+								<f:selectItem itemLabel="#{msg['entities.column.restriction.to.owner']}" itemValue="Y"/>
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>Indépendances aux modèles</p:column>
+						<p:column>
+							<p:selectCheckboxMenu label="Entités" value="#{entitiesCtrl.entitesIndependantes}" 
+								filter="true" filterMatchMode="contains" >
+								<f:selectItems value="#{entitiesCtrl.entitesLabel}" />
+							</p:selectCheckboxMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:commandButton value="Valider" actionListener="#{entitiesCtrl.validerIndependance}"
+								update="@form" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+				
+			</p:fieldset>
+			<p:contextMenu for="entitiesdatatable">
+	        		<p:menuitem value="#{msg['general.delete']}" update="entitiesdatatable,dependencies" icon="ui-icon-close" actionListener="#{entitiesCtrl.constructDependencies}" oncomplete="dependencies.show()" />
+        		</p:contextMenu> 
+			<p:fieldset legend="#{msg['entities.entities']}" id="entTable" >
+				<p:scrollPanel style="width:98%; height:600px">
+				<p:dataTable  var="ent" value="#{entitiesCtrl.entities}" style="width:96%"
+					id="entitiesdatatable" widgetVar="entitiesdatatable" emptyMessage=""
+					selection="#{entitiesCtrl.maintenanceEntity}" selectionMode="single" rowKey="#{ent.name}"
+				>
+					<p:column headerText="#{msg['entities.column.title']}" width="200">
+						<h:outputText value="#{ent.name}"></h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['entities.column.description']}" width="300">
+						<h:outputText value="#{ent.description}"></h:outputText>
+					</p:column>
+				</p:dataTable>
+				</p:scrollPanel>
+			</p:fieldset>
+			<p:confirmDialog id="dependencies" message="êtes vous sûr de vouloir supprimer cette entité ?"  
+                header="#{msg['entities.confirm.dialog.delete.entity']}" severity="alert" widgetVar="dependencies">
+                <h3>#{msg['entities.confirm.dialog.delete.entity.h3']}</h3>
+				<p>
+					<h:outputFormat value="#{msg['entities.confirm.dialog.delete.entity.message.attention']}">
+							<f:param value="#{entitiesCtrl.maintenanceEntity.name}" />
+					</h:outputFormat>
+				</p>
+				
+					#{msg['entities.reference.to.other.entity']} :
+					<p:dataList id="atts" value="#{entitiesCtrl.satts}" var="wi">
+						#{aa}
+					</p:dataList>
+					#{msg['entities.screens']} :
+					<p:dataList id="wins" value="#{entitiesCtrl.windows}" var="wi">
+						#{wi}
+					</p:dataList>
+					#{msg['entities.actions']} :
+					<p:dataList id="acts" value="#{entitiesCtrl.actions}" var="ac">
+						#{ac}
+					</p:dataList>
+					#{msg['entities.documents']} :
+					<p:dataList id="docs" value="#{entitiesCtrl.documents}" var="dc">
+						#{dc}
+					</p:dataList>
+					#{msg['entities.processus']} :
+					<p:dataList id="procs" value="#{entitiesCtrl.processes}" var="ps">
+						#{ps}
+					</p:dataList>
+				
+				<p>#{msg['entities.continue']}</p>
+				<p:commandButton value="#{msg['general.delete']}" actionListener="#{entitiesCtrl.doDelete}" update="@form" oncomplete="dependencies.hide()" />&nbsp;&nbsp;
+				<p:commandButton value="#{msg['general.cancel']}" actionListener="#{entitiesCtrl.cancelDelete}" update="@form" oncomplete="dependencies.hide()" /> 
+			</p:confirmDialog>
+			</p:tab>
+			<p:tab id="attribDefine" title="#{msg['entities.field.assignment']}">
+			<p:fieldset legend="#{msg['entities.new.attribute']}">
+			<p:panelGrid style="width:100%">
+					<p:row>
+						<p:column>#{msg['entities.entity']}</p:column>
+						<p:column colspan="7">
+							<p:selectOneMenu value="#{entitiesCtrl.selectedEntity}" effect="fade" style="width:160px;"
+								filter="true" filterMatchMode="contains" >
+								<p:ajax event="change" listener="#{entitiesCtrl.entityChangeListener}" update=":form:calculus" ></p:ajax>
+								<f:selectItems value="#{entitiesCtrl.entities}" var="ett" itemLabel="#{ett.name}" itemValue="#{ett.dataReference}"  ></f:selectItems>
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.title']}</p:column>
+						<p:column colspan="5"><p:inputText value="#{entitiesCtrl.attributeTitle}" style="width:152px;"></p:inputText></p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.type']}</p:column>
+						<p:column colspan="5">
+						<p:selectOneMenu value="#{entitiesCtrl.selectedType}" effect="fade" valueChangeListener="#{entitiesCtrl.typeChangeListener}" style="width:160px;"
+							filter="true" filterMatchMode="contains" >
+							<p:ajax update=":form:filecontent,:form:lockfields, :form:calculus" listener="#{entitiesCtrl.prepareTreeNode}" event="change" />
+							<f:selectItem itemLabel="#{msg['entities.option.number']}" itemValue="N"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.text']}" itemValue="T"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.date']}" itemValue="D"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.hour']}" itemValue="H"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.file']}" itemValue="F"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.current.user']}" itemValue="U"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.monetary']}" itemValue="M"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.lock']}" itemValue="V"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.metatable']}" itemValue="E"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.metareference']}" itemValue="R"></f:selectItem>
+							<f:selectItem itemLabel="#{msg['entities.option.boolean']}" itemValue="X"></f:selectItem>
+							<f:selectItems value="#{entitiesCtrl.entities}" var="ett" itemLabel="#{ett.name}" itemValue="#{ett.dataReference}"></f:selectItems>
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.default.value']}</p:column>
+						<p:column colspan="5"><p:inputText value="#{entitiesCtrl.defaultValue}" style="width:152px;"></p:inputText></p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.length']}</p:column>
+						<p:column colspan="5"><p:inputText value="#{entitiesCtrl.fieldLength}" style="width:152px;"></p:inputText></p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.reference']}</p:column>
+						<p:column> 
+							<p:selectBooleanCheckbox id="referenceCB" value="#{entitiesCtrl.reference}"></p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="refhelp.show();" type="button"></p:commandButton>
+						</p:column>
+						<p:column>#{msg['entities.column.mandatory']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.mandatory}"></p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="mandatoryhelp.show();" type="button"></p:commandButton>
+						</p:column>
+						<p:column>#{msg['entities.column.identifier']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.keyField}"></p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="keyhelp.show();" type="button"></p:commandButton>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.calculated.fields']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.calculated}" >
+								<p:ajax update=":form:calculus" listener="#{entitiesCtrl.prepareTreeNode}"/>  
+							</p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="calculatedhelp.show();" type="button"></p:commandButton>
+						</p:column>
+						<p:column>#{msg['entities.column.multiples']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.multiple}" />
+							<p:commandButton icon="ui-icon-help" onclick="multihelp.show();" type="button"></p:commandButton>
+						</p:column>
+						<p:column>#{msg['entities.column.automatic.value']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.autoValue}" />
+							<p:commandButton icon="ui-icon-help" onclick="autohelp.show();" type="button"></p:commandButton>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.requires.validation']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.requiresValidation}" >
+								<p:ajax update=":form:calculus" listener="#{entitiesCtrl.prepareTreeNode}"/>  
+							</p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="validationhelp.show();" type="button"></p:commandButton>
+						</p:column>
+						<p:column>#{msg['entities.column.layout.conditional']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.conditionalLayout}" >
+								<p:ajax update=":form:calculus" listener="#{entitiesCtrl.prepareTreeNode}"/>  
+							</p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="conditionalhelp.show();" type="button"></p:commandButton>
+						</p:column>
+						<p:column>#{msg['entities.column.historisation']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.historisation}" >
+							</p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="historisationhelp.show();" type="button"></p:commandButton>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.text.area']}</p:column>
+						<p:column>
+							<p:selectBooleanCheckbox value="#{entitiesCtrl.textarea}"></p:selectBooleanCheckbox>
+							<p:commandButton icon="ui-icon-help" onclick="textareahelp.show();" type="button"></p:commandButton>
+						</p:column>
+						
+						
+					</p:row>
+				</p:panelGrid>
+							
+			</p:fieldset>
+			
+			<p:fieldset id="lockfields" legend="#{msg['entities.fieldset.locking']}">
+				<p:panelGrid  style="width:100%" rendered="#{entitiesCtrl.selectedType == 'V'}">
+					<p:row>
+						<p:column>#{msg['entities.label.btn.lock']}</p:column>
+						<p:column><p:inputText value="#{entitiesCtrl.lockLabel}" /></p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.label.btn.unlock']}</p:column>
+						<p:column><p:inputText value="#{entitiesCtrl.unlockLabel}" /></p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:fieldset>
+			<p:fieldset legend="#{msg['entities.fieldset.formule.calculated.fields']}" id="calculus">
+				<p:panelGrid rendered="#{entitiesCtrl.calculated or entitiesCtrl.requiresValidation or entitiesCtrl.conditionalLayout or entitiesCtrl.selectedType eq 'R'}" 
+				 columns="2" style="width:100%;">
+					<p:tree value="#{entitiesCtrl.rootAttributes}" var="nde" selection="#{entitiesCtrl.selectedNode}" selectionMode="single"
+						style="height:300px" >
+						<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed" >
+							<h:outputText value="#{nde.name}" />
+						</p:treeNode>
+					</p:tree>
+					<p:inputTextarea id="formula" value="#{entitiesCtrl.formula}"
+						autoResize="false" style="width:600px; height:300px" />
+					
+					<f:facet name="footer">
+						<p:commandButton value="#{msg['entities.btn.add.fields']}" actionListener="#{entitiesCtrl.addFieldToFormula}" update="formula"/>
+					</f:facet>
+					
+				</p:panelGrid>
+			</p:fieldset>
+			
+			<p:fieldset legend="#{msg['entities.fieldset.file.fields.properties']}" id="filecontent">
+				<p:panelGrid  style="width:100%" rendered="#{entitiesCtrl.selectedType == 'F'}">
+					<p:row>
+						<p:column>#{msg['entities.column.file.name']}</p:column>
+						<p:column><p:inputText value="#{entitiesCtrl.fmdTitle}" /></p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['entities.column.extension']}</p:column>
+						<p:column>
+							<p:inputText id="fmdExtension" value="#{entitiesCtrl.fmdExtension}" />
+							<p:tooltip for="fmdExtension" value="#{msg['entities.column.tooltip.sample']}"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:fieldset>
+			<p:confirmDialog id="attdependencies" message="#{msg['entities.confirm.dialog.message']}"  
+                header="#{msg['entities.confirm.dialog.delete.fields']}" severity="alert" widgetVar="attdependencies">
+                <h3>#{msg['entities.confirm.dialog.delete.fields.h3']}</h3>
+				<p>
+					<h:outputFormat value="#{msg['entities.delete.confirmation.message.attention']}">
+						<f:param value="#{entitiesCtrl.attToDelete.attribute}" />
+					</h:outputFormat>
+				</p>
+				<p>
+				
+					#{msg['entities.screens']} :
+					<p:dataList id="wattwins" value="#{entitiesCtrl.windows}" var="wi">
+						#{wi}
+					</p:dataList>
+					
+				</p>
+				<p>#{msg['entities.continue']}</p>
+				<p:commandButton value="#{msg['general.delete']}" actionListener="#{entitiesCtrl.doDeleteAtt}" update="@form" oncomplete="attdependencies.hide()" />&nbsp;&nbsp;
+				<p:commandButton value="#{msg['general.cancel']}" actionListener="#{entitiesCtrl.cancelDeleteAtt}" update="@form" oncomplete="attdependencies.hide()" /> 
+			</p:confirmDialog>
+			<p:fieldset legend="Attributs" id="attTable" widgetVar="attTable" >
+			<p:scrollPanel style="width:98%; height:600px">
+				<p:dataTable  var="attribute" value="#{entitiesCtrl.attributes}" 
+					id="atttable" widgetVar="atttable" emptyMessage=""	>
+				
+					<p:column headerText="#{msg['entities.entity']}" width="60" sortBy="#{attribute.entity.name}"
+						filterBy="#{attribute.entity.name}" filterMatchMode="contains"
+					 >
+						<h:outputText value="#{attribute.entity.name}"></h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['entities.column.attribute']}" width="60">
+						<h:outputText value="#{attribute.attribute}"></h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['entities.column.type']}" width="60" >
+						<h:outputText value="#{attribute.typeLabel}"></h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['entities.column.description']}" width="200">
+						<h:outputText value="#{attribute.description}"></h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['general.delete']}">
+						<p:commandButton actionListener="#{entitiesCtrl.constructAttributeDependencies}" value="#{msg['general.delete']}" oncomplete="attdependencies.show();">
+							<f:setPropertyActionListener value="#{attribute}"   
+                            target="#{entitiesCtrl.attToDelete}"  />
+						
+						</p:commandButton>
+					</p:column>
+					
+				</p:dataTable>
+			</p:scrollPanel>
+			</p:fieldset>
+			</p:tab>
+			</p:wizard>
+			</div>
+
+		
+	</h:form>
+	<p:dialog widgetVar="refhelp"  hideEffect="blur">
+		<h3>Ce champs est une référence</h3>
+		<p>L'attribut référence s'aplique seulement aux types personallisés (autres entités)</p>
+		<p>En cochant ce champs vous pouvez accéder à l'entité #{entitesCtrl.referencedTitle} sans pouvoir la modifier. 
+		Cette entitée apparaitra sous forme d'une liste déroulante pendant la modification </p>
+	</p:dialog>
+	<p:dialog widgetVar="mandatoryhelp"  hideEffect="blur">
+		<h3>Ce champs est obligatoire</h3>
+		<p>Un champs obligatoire ne peut être laissé vide lors de la saisie d'un formulaire</p>
+	</p:dialog>
+	<p:dialog widgetVar="keyhelp"  hideEffect="blur">
+		<h3>Ce champs est un identificateur</h3>
+		<p>Un identificateur est un champs représentatif, sa valeur est intelligible et reflête la valeur générale de l'entitée (Exemple : La raison sociale en ce qui concerne une entreprise, Le client <b>et</b> la date en ce qui concerne la commande)</p>
+	</p:dialog>
+	<p:dialog widgetVar="calculatedhelp"  hideEffect="blur">
+		<h3>Ce champs est calculable</h3>
+		<p>Un champs calculabe est un champs dont la valeur est déduite à partir d'une formule sur la base des champs de l'entités ou de ceux des sous-entités</p>
+	</p:dialog>
+	<p:dialog widgetVar="multihelp"  hideEffect="blur">
+		<h3>Ce champs est multiple</h3>
+		<p>Ce champs fait référence à un ensemble d'enregistrement de l'entité référencée</p>
+	</p:dialog>
+	<p:dialog widgetVar="autohelp"  hideEffect="blur">
+		<h3>Ce champs est en valeur automatique !</h3>
+		<p>La valeur de ce champs est un entier généré automatiquement, il est donc en lecture seule</p>
+	</p:dialog>
+	<p:dialog widgetVar="validationhelp"  hideEffect="blur">
+		<h3>Ce champs requiert une validation !</h3>
+		<p>La valeur de ce champs doit répondre à une contrainte d'intégrité numérique sous forme d'un script ProtoLANG</p>
+	</p:dialog>
+	<p:dialog widgetVar="conditionalhelp"  hideEffect="blur">
+		<h3>Ce champs s'affiche suivant des conditions</h3>
+		<p>Ce champs ne sera affiché que si une condition est vérifiée</p>
+	</p:dialog>
+	
+	<p:dialog widgetVar="historisationhelp"  hideEffect="blur">
+		<h3>Historisation</h3>
+		<p>Ce champs servira à marquer l'aspect d'historisation de l'entité en cours</p>
+	</p:dialog>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s3.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+			<p>
+				Les entités sont les objets que l'application est sencée manipuler<br />
+				Dans le cas d'une application de gestion commerciale les entités seront par exemple : 
+				<i>Produit, Commande, Client, Facture</i>
+			</p>
+		 </div>
+		 <div class="box">
+			<p>
+				La détéction des entités par lecture du cahier des charges se base sur l'analyse des phrases à la recherche des compléments d'objet<br />
+				Exemple : 
+				L'utilisateur choisit <i>le produit</i> de la liste des propositions.
+			</p>
+		 </div>
+		 <br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.entities}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" /> 
+		</div>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+</html>

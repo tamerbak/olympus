@@ -1,0 +1,140 @@
+package fr.protogen.cch.batch;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+
+import fr.protogen.masterdata.dal.DBUtils;
+
+public class ImportMetiersVit1job {
+	public static void main(String[] args) {
+		importFromFile();
+		importCorrespondance();
+	}
+
+	private static void importCorrespondance() {
+		
+		
+	}
+
+	private static void importFromFile() {
+		String fileName = "C:\\Users\\jakjoud\\Documents\\projects support files\\Vit1job\\metiers.csv";
+		List<String> lines = new ArrayList<String>();
+		Connection cnx = null;
+		BufferedWriter bw = null;
+		try{
+			File file = new File("C:\\Users\\jakjoud\\Documents\\projects support files\\Vit1job\\metiers.csv.log");
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+			Class.forName("org.postgresql.Driver");
+			cnx = DriverManager.getConnection(DBUtils.url,DBUtils.username, DBUtils.password);
+			
+			lines = IOUtils.readLines(new FileInputStream(fileName));
+			lines.remove(0);
+			bw.write("[VIT1JOB]Nombre des correspondances\t"+lines.size());
+			bw.newLine();
+		}catch(Exception exc){
+			exc.printStackTrace();
+		}
+		
+		System.out.println("[VIT1JOB]Nombre des correspondances\t"+lines.size());
+		
+		int index=0;
+		for(String l : lines){
+			index++;
+			System.out.println("[VIT1JOB]Correspondances\t"+index+"/"+lines.size());
+			String[] T = l.split(",");
+			String cp = T[0];
+			String ville = T[1];
+			int idcp = 0;
+			int idv = 0;
+			
+			String sql = "select pk_user_metier from user_metier where libelle=?";
+			try{
+				bw.write("[VIT1JOB]Correspondances\t"+index+"/"+lines.size());
+				PreparedStatement ps = cnx.prepareStatement(sql);
+				ps.setString(1, cp);
+				ResultSet rs = ps.executeQuery();
+				if(rs.next())
+					idcp = rs.getInt(1);
+				rs.close();
+				ps.close();
+			}catch(Exception exc){
+				exc.printStackTrace();
+			}
+			
+			if(idcp == 0){
+				sql = "insert into user_metier (libelle) values (?) returning pk_user_metier";
+				try{
+					PreparedStatement ps = cnx.prepareStatement(sql);
+					ps.setString(1, cp);
+					ResultSet rs = ps.executeQuery();
+					if(rs.next())
+						idcp = rs.getInt(1);
+					rs.close();
+					ps.close();
+				}catch(Exception exc){
+					exc.printStackTrace();
+				}
+			}
+			
+			
+			/*sql = "select pk_user_competence from user_competence where libelle=?";
+			try{
+				PreparedStatement ps = cnx.prepareStatement(sql);
+				ps.setString(1, ville);
+				ResultSet rs = ps.executeQuery();
+				if(rs.next())
+					idv = rs.getInt(1);
+				rs.close();
+				ps.close();
+			}catch(Exception exc){
+				exc.printStackTrace();
+			}
+			*/
+			if(idv==0){
+				sql = "insert into user_competence (libelle, fk_user_metier) values (?, ?) returning pk_user_competence";
+				try{
+					PreparedStatement ps = cnx.prepareStatement(sql);
+					ps.setString(1, ville);
+					ps.setInt(2, idcp);
+					ResultSet rs = ps.executeQuery();
+					if(rs.next())
+						idv = rs.getInt(1);
+					rs.close();
+					ps.close();
+				}catch(Exception exc){
+					exc.printStackTrace();
+				}
+			} else {
+				sql = "update user_competence set fk_user_metier=? where pk_user_competence=?";
+				try{
+					PreparedStatement ps = cnx.prepareStatement(sql);
+					ps.setInt(1, idcp);
+					ps.setInt(2, idv);
+					ps.execute();
+					ps.close();
+				}catch(Exception exc){
+					exc.printStackTrace();
+				}
+			}
+		}
+		
+		try{
+		    cnx.close();
+		    bw.close();
+		}catch(Exception exc){
+			exc.printStackTrace();
+		}
+		
+	}
+}

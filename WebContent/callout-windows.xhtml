@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Appels de fonctions
+				<small>Liste des fonctions associées aux fenêtres</small></h3>
+			</div>
+		</div>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="Nouveau" action="newcalloutwindow" icon="ui-icon-document" />
+			</p:menubar>
+			
+			<p:dataTable value="#{calloutCtrl.windowCallouts}" var="c" emptyMessage=""
+				filteredValue="#{calloutCtrl.windowCalloutsFiltres}" >
+				<p:column headerText="Fenêtre" filterBy="#{c.window.title}" filterMatchMode="contains" >
+					<h:outputText value="#{c.window.title}" />
+				</p:column>
+				<p:column headerText="Fonction" filterBy="#{c.callout.nom}" filterMatchMode="contains" >
+					<h:outputText value="#{c.callout.nom}" />
+				</p:column>
+				<p:column width="20">
+					<p:commandButton type="button" icon="ui-icon-gear" />
+				</p:column>
+				<p:column width="20">
+					<p:commandButton type="button" icon="ui-icon-trash" />
+				</p:column>
+			</p:dataTable>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	
+	</ui:define>
+</ui:composition>
+</html>

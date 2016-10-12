@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Ressources de l'application
+				<small>Nouvelle ressource</small></h3>
+			</div>
+		</div>
+			
+			<div class="table">
+				<p:menubar>
+					<p:menuitem ajax="false" value="Enregistrer" action="#{gresourcesCtrl.saveGResource}" icon="ui-icon-disk" />
+					<p:menuitem ajax="false" value="Synthèse" action="resources-synthesis" icon="ui-icon-calculator" />
+				</p:menubar>
+				
+				<p:panelGrid columns="4" style="width:100%">
+				<h:outputText value="Nom" /> 
+				<p:inputText value="#{gresourcesCtrl.toCreate.name}" />
+				<h:outputText value="Clé" /> 
+				<p:inputText value="#{gresourcesCtrl.toCreate.key}" />
+				<h:outputText value="Type" /> 
+				<p:selectOneMenu value="#{gresourcesCtrl.toCreate.type}">
+					<f:selectItem itemLabel="Bibliothèque JAR" itemValue="jar" />
+					<f:selectItem itemLabel="Document Office" itemValue="office" />
+					<f:selectItem itemLabel="Document PDF" itemValue="pdf" />
+					<f:selectItem itemLabel="JRXML" itemValue="jrxml" />
+					<f:selectItem itemLabel="Archive Zip" itemValue="zip" />
+					<f:selectItem itemLabel="Fichier text" itemValue="txt" />
+					<f:selectItem itemLabel="Fichier binaire" itemValue="binaire" />
+				</p:selectOneMenu>
+				<h:outputText value="Plugin" />
+				<p:fileUpload id="jar" fileUploadListener="#{gresourcesCtrl.handleFileUpload}"  
+		            mode="advanced"
+		            multiple="false"
+		            sizeLimit="1000000000"
+		        />
+			</p:panelGrid>
+			
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	
+	</ui:define>
+</ui:composition>
+</html>

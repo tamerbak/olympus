@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Generium</title>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<style media="all" type="text/css">@import "css/all.css";</style>
+</h:head>
+<h:body>
+<f:view>
+<div id="main">
+	<div id="header">
+		<a href="index.html" class="logo"><img src="img/logo.png" width="398" height="90" alt="" /></a>
+		
+	</div>
+	<div id="middle">
+		<div id="left-column">
+			<h3>Informations de base</h3>
+			<ul class="nav">
+				<li><a href="application.xhtml">Application</a></li>
+				<li><a href="description.xhtml">Fonctions</a></li>
+				<li><a href="entities.xhtml">Dictionnaire</a></li>
+				<li><a href="organizations.xhtml">Organisations</a></li>
+				<li><a href="parpkgs.xhtml">Paramétrage</a></li>
+			</ul>
+			<h3>Composants</h3>
+			<ul class="nav">
+				<li><a href="screens.xhtml">Ecrans</a></li>
+				<li><a href="actsynthesis.xhtml">Actions</a></li>
+				<li><a href="docsynthesis.xhtml">Documents</a></li>
+				<li><a href="proceduresynthesis.xhtml">Processus</a></li>
+			</ul>
+			<h3>Paramètres</h3>
+			<ul class="nav">
+				<li><a href="menuitem.xhtml">Menu</a></li>
+				<li><a href="rolesynthesis.xhtml">Sécurité</a></li>
+				<li><a href="alerts.xhtml">Alertes</a></li>
+				<li><a href="wssynthesis.xhtml">Tableau de bord</a></li>
+			</ul>
+			<h3>Déconnexion</h3>
+			<ul class="nav">
+				<li><p:commandLink action="#{preanalyseCtrl.logout}" value="Quitter"/></li>
+				
+			</ul>
+		</div>
+		<div id="center-column">
+					<ui:insert name="contenu" /> 
+		
+			
+		  
+		</div>
+		<div id="right-column">
+			<ui:insert name="help"></ui:insert>
+			
+	  </div>
+	</div>
+	<div id="footer"></div>
+</div>
+</f:view>
+</h:body>
+</html>

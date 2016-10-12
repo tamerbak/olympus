@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		
+	<div class="row-fluid">
+		<div class="col-md-12">
+			<h3 class="page-title">#{msg['actions.title']}
+			<small>#{msg['actions.subtitle']}</small></h3>
+		</div>
+	</div>
+			
+	<div class="table">
+		<p:menubar>
+			<p:menuitem value="#{msg['actions.save']}" actionListener="#{actionCtrl.saveAction}" icon="ui-icon-disk" oncomplete="wiz.loadStep(wiz.cfg.steps [0], true)" update="@form" />
+			<p:menuitem value="#{msg['actions.add.argument']}" actionListener="#{actionCtrl.addAttribute}" icon="ui-icon-document" oncomplete="wiz.loadStep(wiz.cfg.steps [0], true)" update="plcscript" />
+			<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="actsynthesis" icon="ui-icon-seek-end" />
+		</p:menubar>
+		<p:growl id="growl" showDetail="true" sticky="true" />  
+					
+		<p:wizard backLabel="#{msg['actions.previous']}" widgetVar="wiz" nextLabel="#{msg['actions.next']}" title="#{msg['actions.title']}">
+			<p:tab id="actiondefinition" title="Définition de l'action" style="height:300px;">
+				<p:fieldset>
+				
+					<p:panelGrid columns="2" style="width:100%;" >
+						<p:outputLabel  value="#{msg['actions.label.screen']}"/>
+						<p:selectOneMenu id="ddscreen" value="#{actionCtrl.selectedScreen}"  effect="fade" style="width:120px;"  >
+							<p:ajax update="attributeTable" listener="#{actionCtrl.screenChanged}" event="change" ></p:ajax>
+							<f:selectItems value="#{actionCtrl.windows}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}" ></f:selectItems>
+						</p:selectOneMenu>
+						<p:outputLabel  value="#{msg['actions.label.title']}"/>
+						<p:inputText id="actionTitle" value="#{actionCtrl.actionTitle}"/>
+						<p:outputLabel value="#{msg['actions.label.description']}"/>
+						<p:inputTextarea id="actionDescription" autoResize="true" value="#{actionCtrl.actionDescription}"/>
+						<p:outputLabel  value="#{msg['actions.label.script']}"/>
+						<p:inputTextarea id="plcscript" value="#{actionCtrl.plcScript}" rows="10" style="width:98%;" />
+					</p:panelGrid>
+					<p:fieldset legend="Champs">
+						 
+						<p:dataTable emptyMessage="" id="attributeTable" var="attrib" value="#{actionCtrl.attributes}" 
+							 selectionMode="single" selection="#{actionCtrl.selectedAttribute}"
+							 rowKey="#{attrib.attribute}">
+							<p:column headerText="#{msg['actions.table.header.entity']}">
+								<h:outputText value="#{attrib.entity.name}"/>
+							</p:column>
+							<p:column headerText="#{msg['actions.table.header.fields']}">
+								<h:outputText value="#{attrib.attribute}"/>
+							</p:column>
+							<p:column headerText="#{msg['actions.table.header.type']}">
+								<h:outputText value="#{attrib.typeLabel}"/>
+							</p:column>
+						</p:dataTable>
+					</p:fieldset>
+					<p:fieldset legend="#{msg['actions.fieldset.legend']}">
+						<p:panelGrid columns="2" style="width:100%">
+							<p:outputLabel value="#{msg['actions.label.parameter']}"/>
+							<p:inputText id="parameterlabel" value="#{actionCtrl.parameterLabel}"/>
+							<p:outputLabel  value="#{msg['actions.label.type']}"/>
+							<p:selectOneMenu id="parametertype" value="#{actionCtrl.parameterType}">
+								<f:selectItem itemLabel="#{msg['actions.option.label.integer']}" itemValue="I" />
+								<f:selectItem itemLabel="#{msg['actions.option.label.decimal']}" itemValue="F" />
+								<f:selectItem itemLabel="#{msg['actions.option.label.date']}" itemValue="D" />
+								<f:selectItems value="#{actionCtrl.entities}" var="ent" itemLabel="#{ent.name}" itemValue="#{ent.dataReference}" />
+							</p:selectOneMenu>
+							<p:spacer width="2" height="2" />
+							<p:commandButton value="#{msg['actions.fieldset.button.add']}" actionListener="#{actionCtrl.addParameter}" ajax="true" update="plcscript"/>
+							
+						</p:panelGrid>
+					</p:fieldset>
+				</p:fieldset>
+				
+			</p:tab>		
+			<p:tab id="resultaffectation" title="#{msg['actions.tab.result.title']}">
+				<p:fieldset>
+					<p:panelGrid columns="2" style="width:100%;">
+						<p:outputLabel  value="#{msg['actions.tab.label.entity']}"/>
+						<p:selectOneMenu id="paentity" value="#{actionCtrl.selectedEntity}"  effect="fade" style="width:120px;"  >
+							<p:ajax update="paattributes,mtmattributes" event="change" listener="#{actionCtrl.paEntityChanged}" ></p:ajax>
+							<f:selectItems value="#{actionCtrl.entities}" var="entity" itemLabel="#{entity.name}" itemValue="#{entity.dataReference}" ></f:selectItems>
+						</p:selectOneMenu>
+						<p:outputLabel value="#{msg['actions.tab.label.title']}"/>
+						<p:inputText id="patitle" value="#{actionCtrl.postAction.postAction}"/>
+						<p:outputLabel value="#{msg['actions.tab.label.action']}"/>
+						<p:selectOneMenu id="patype" value="#{actionCtrl.selectedType}"  effect="fade" style="width:120px;"  >
+							<f:selectItem itemLabel="#{msg['actions.tab.label.new.record']}" itemValue="1"></f:selectItem>
+							<f:selectItem itemLabel="Mettre à jour" itemValue="2"></f:selectItem>
+						</p:selectOneMenu>
+						<p:outputLabel  value="#{msg['actions.tab.label.document']}"/>
+						<p:selectOneMenu id="boundDocument" value="#{actionCtrl.selectedDocument}"  effect="fade" style="width:120px;"  >
+							<f:selectItem itemLabel="#{msg['actions.tab.label.new.record']}" itemValue="0"></f:selectItem>
+							<f:selectItems value="#{actionCtrl.documents}" var="docs" itemLabel="#{docs.title}" itemValue="#{docs.id}" />
+						</p:selectOneMenu>
+						
+					</p:panelGrid>
+						<p:dataTable id="paattributes" value="#{actionCtrl.paEntity.attributes}" var="att" editable="true" widgetvar="paattributes"
+							emptyMessage="" rowKey="#{att.attribute}" >
+							<p:ajax event="rowEdit" update="@this" listener="#{actionCtrl.onRowEdit}" />
+							<p:column headerText="#{msg['actions.table.header.fields']}">
+								<h:outputText value="#{att.attribute}"/>
+							</p:column>
+							<p:column headerText="#{msg['actions.table.header.type']}">
+								<h:outputText value="#{att.typeLabel}"/>
+							</p:column>
+							<p:column headerText="#{msg['actions.table.header.label.paramter']}">
+							<p:cellEditor>  
+								<f:facet name="input"><p:inputText value="#{att.dtoValue}"/></f:facet>
+	                 					<f:facet name="output"><h:outputText value="#{att.dtoValue}"/></f:facet>
+	              				</p:cellEditor>
+							</p:column>
+							<p:column style="width:6%">  
+					            <p:rowEditor />  
+					        </p:column>
+						</p:dataTable>
+						<p:panel id="mtmattributes" widgetVar="mtmattributes" header="#{msg['actions.panel.title.depend.entities']}">
+						<c:forEach items="#{actionCtrl.mtmTables}" var="mtmTable">
+						<p:dataTable value="#{mtmTable.attributes}" var="mat" editable="true" id="#{mtmTable.dataReference}_id"
+							emptyMessage="" widgetVar="#{mtmTable.dataReference}_id" rowKey="#{mat.attribute}" >
+							<p:ajax event="rowEdit" update="@this" listener="#{actionCtrl.onRowEdit}" />
+							<p:column headerText="#{msg['actions.table.header.fields']}">
+								<h:outputText value="#{mat.attribute}"/>
+							</p:column>
+							<p:column headerText="#{msg['actions.table.header.type']}">
+								<h:outputText value="#{mat.typeLabel}"/>
+							</p:column>
+							<p:column headerText="#{msg['actions.table.header.label.paramter']}">
+							<p:cellEditor>  
+								<f:facet name="input"><p:inputText value="#{mat.dtoValue}"/></f:facet>
+	                 					<f:facet name="output"><h:outputText value="#{mat.dtoValue}"/></f:facet>
+	              				</p:cellEditor>
+							</p:column>
+							<p:column style="width:6%">  
+					            <p:rowEditor />  
+					        </p:column>
+						</p:dataTable>
+						</c:forEach>
+						</p:panel>
+					<p:commandButton icon="ui-icon-help" value="#{msg['actions.button.parameter.help']}" onclick="parhelp.show();" type="button"></p:commandButton>
+					<p:dialog widgetVar="parhelp"  hideEffect="blur">
+						<h3>Paramètre</h3>
+						<p>Dans le contexte d'un processus métier vous pouvez spécifier des paramétres généraux qui seront utilisés pendant le déroulement de ce denier.</p>
+						<p>Cela signifie que l'application cherchera la valeur de ce champs dans les paramètres existants lors de l'exécution</p>
+						<p>Si l'exécution ne se fait pas dans le cadre d'un processus l'appication demandera la saisie des paramètres</p>
+						<p>Si vous ne voulez pas remplire un champs suite à l'exécution de l'action laissez le champs des paramètres vide</p>
+					</p:dialog>
+				</p:fieldset>
+			</p:tab>
+				
+		</p:wizard>
+	
+	</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s5.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Les actions aparaissent comme des boutons sur les écrans. Generium détectera directement les arguments en question. Dans le cas où il a besoin de paramétres externes Generium affichera une boite de dialogue pour la saisie de ces paramétres
+		</div>
+		<div class="box">
+		Après la saisie de la formule de calcule, vous devez renseigner l'action de sauvegarde et n'oubliez pas de séléctionner le champs cible du calcul
+		</div>
+		<br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.actions}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

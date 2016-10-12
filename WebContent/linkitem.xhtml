@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{msg['linkitem.title']}
+				<small>#{msg['linkitem.subtitle']}</small></h3>
+			</div>
+		</div>	
+		<div class="table">
+			<p:dialog id="dlg2" closable="false" widgetVar="dlg2" modal="false" resizable="false" dynamic="false" style="width: 300px;" > 
+				<h:panelGrid columns="3" style="width:100%">
+				<p:graphicImage value="/img/loading.gif" />
+				<p:spacer width="20" height="10" />
+				<p:outputLabel>#{msg['linkitem.uploading']}</p:outputLabel>
+				</h:panelGrid>
+			</p:dialog>
+			<p:menubar>
+				<p:menuitem value="#{msg['general.save']}" actionListener="#{menuCtrl.saveLinks}" onstart="dlg2.show();" oncomplete="dlg2.hide();" icon="ui-icon-disk" update="@form" />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="menuform" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:fieldset legend="#{msg['linkitem.title']}">
+				<p:panelGrid columns="2" style="width:100%">
+					<p:outputLabel value="#{msg['linkitem.screen']}" />
+					<p:selectOneMenu id="selectedscreen" style="width:250px" value="#{menuCtrl.selectedScreen}" 
+						filter="true" filterMatchMode="contains" >
+						<p:ajax update=":form:targetscreens,:form:nextLink, :form:prevLink" listener="#{menuCtrl.selectedScreenChange}" onstart="dlg2.show();" oncomplete="dlg2.hide();" />
+						<f:selectItems value="#{menuCtrl.screens}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}"/>
+					</p:selectOneMenu>
+					<p:outputLabel value="#{msg['linkitem.previous.link']}" />
+					<p:selectOneMenu id="prevLink"  style="width:250px" value="#{menuCtrl.previousScreen}" >
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems value="#{menuCtrl.currentLinks}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}"/>
+					</p:selectOneMenu>
+					<p:outputLabel value="#{msg['linkitem.next.link']}" />
+					<p:selectOneMenu id="nextLink"  style="width:250px" value="#{menuCtrl.nextScreen}" >
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems value="#{menuCtrl.currentLinks}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}"/>
+					</p:selectOneMenu>
+					<f:facet name="footer">
+						<p:commandButton value="#{msg['linkitem.btn.reset']}" onstart="dlg2.show();" oncomplete="dlg2.hide();" update="targetscreens" actionListener="#{menuCtrl.razSelection}" />
+					</f:facet>
+				</p:panelGrid> 
+				
+			</p:fieldset>
+			<p:dataTable style="width:100%" id="targetscreens" widgetVar="targetscreens" value="#{menuCtrl.screens}" var="tscr"  emptyMessage=""
+					selection="#{menuCtrl.currentLinks}" selectionMode="multiple" rowKey="#{tscr.title}" scrollable="true" scrollHeight="400" >
+				<p:ajax event="rowSelect" update=":form:nextLink, :form:prevLink" />
+				<p:ajax event="rowUnselect" update=":form:nextLink, :form:prevLink" />
+				<p:column headerText="#{msg['linkitem.column.window']}" filterBy="#{tscr.title}" filterMatchMode="contains">
+					#{tscr.title}
+				</p:column>
+				</p:dataTable>
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s8.png" />
+		</p:notificationBar>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez créer le menu de l'application <br />
+		Le menu a deux niveaux, le premier niveau concerne les rubriques alors que le second représente les écrans accessibles 
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>

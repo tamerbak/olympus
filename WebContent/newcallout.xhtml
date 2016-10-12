@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Appels de fonctions
+				<small>Nouvelle fonction</small></h3>
+			</div>
+		</div>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="Enregistrer" action="#{calloutCtrl.saveCallout}" icon="ui-icon-disk" />
+				<p:menuitem ajax="false" value="Terminer" action="callout-synthesis" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:panelGrid columns="4" style="width:100%">
+				<h:outputText value="Nom" /> 
+				<p:inputText value="#{calloutCtrl.toCreate.nom}" />
+				<h:outputText value="Identifiant" /> 
+				<p:inputText value="#{calloutCtrl.toCreate.key}" />
+				
+				<h:outputText value="Plugin" />
+				<p:fileUpload id="jar" fileUploadListener="#{calloutCtrl.handleFileUpload}"  
+		            mode="advanced"
+		            multiple="false"
+		            sizeLimit="10000000"   
+		            allowTypes="/(\.|\/)(jar)$/"/>
+			</p:panelGrid>
+			
+			<p:spacer width="10" height="10" />
+			<p:dialog header="Nouvel argument" id="newarg" widgetVar="newarg" closable="true">
+				<p:panelGrid style="width:100%" columns="2">
+					<p:inputText id="arglib" value="#{calloutCtrl.newArg.libelle}" >
+						<p:watermark for="arglib" value="Argument"></p:watermark>
+					</p:inputText>
+					<p:inputText id="argval" value="#{calloutCtrl.newArg.value}" >
+						<p:watermark for="argval" value="Valeur"></p:watermark>
+					</p:inputText>
+					<f:facet name="footer">
+						<p:commandButton update="@form" value="Enregistrer" actionListener="#{calloutCtrl.addArg}" oncomplete="newarg.hide();" />
+					</f:facet>
+				</p:panelGrid>
+			</p:dialog>
+			<p:dataTable value="#{calloutCtrl.toCreate.args}" var="a" style="width:100%" emptyMessage=""> 
+				<f:facet name="header"><p:commandButton type="button" icon="ui-icon-plus" onclick="newarg.show();" ></p:commandButton></f:facet>
+				<p:column headerText="Argument">
+					<h:outputText value="#{a.libelle}" />
+				</p:column>
+				<p:column headerText="Valeur par défaut">
+					<h:outputText value="#{a.value}" />
+				</p:column>
+				<p:column width="20">
+					<p:commandButton icon="ui-icon-trash" type="button" />
+				</p:column>
+			</p:dataTable>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	
+	</ui:define>
+</ui:composition>
+</html>

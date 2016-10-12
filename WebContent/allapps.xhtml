@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">	
+	<ui:define name="contenu">
+	<h:form id="form">  
+	<div class="row-fluid">
+		<div class="col-md-12">
+			<h3 class="page-title">#{msg['allaps.title']}
+			<small>#{msg['allaps.subtitle']}</small></h3>
+		</div>
+	</div>
+	<div class="row-fluid">
+		
+		<div class="table">
+			<p:menubar>
+				<p:menuitem value="#{msg['allaps.nouveau']}" action="preanalysis" ajax="false" icon="ui-icon-document" />
+				<p:menuitem value="#{msg['allaps.charger']}" action="#{homeCtrl.next}" ajax="false" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:dataTable id="apptable" value="#{homeCtrl.applications}" var="scr" widgetvar="apptable" 	
+				emptyMessage="" rowKey="#{scr.projectName}" selectionMode="single" selection="#{homeCtrl.selectedApp}"	>
+				<p:column headerText="#{msg['allaps.table.application']}">
+					<h:outputText value="#{scr.projectName}"/>
+				</p:column>
+				<p:column headerText="#{msg['allaps.table.autheur']}">
+					<h:outputText value="#{scr.author}"/>
+				</p:column>
+			</p:dataTable>
+		</div>
+	</div>
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+		<strong class="h">#{msg['allaps.table.aide']}</strong>
+		<div class="box">
+		Bienvenu à la plateforme de modélisation de Generium <br/> Vous pouvez vous référer à cette section quand vous avez besoin d'aide
+		<br /> Commencez par choisir une application existante ou créer une nouvelle application
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Conception des écrans
+				<small>Ecrans créés</small></h3>
+			</div>
+		</div>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="Nouveau" action="newscreen" icon="ui-icon-document" />
+				<p:menuitem ajax="false" value="Etape suivante" action="#{screensCtrl.next}" icon="ui-icon-seek-end" />
+			</p:menubar>
+			<p:panelGrid columns="2" style="width:100%">
+				<p:outputLabel for="screensearch" value="Ecran" />
+				<p:selectOneMenu id="screensearch" value="#{screensCtrl.toLoad.id}" effect="fade"
+					filter="true" filterMatchMode="contains">
+						<p:ajax event="change"   listener="#{screensCtrl.doLoadWindow}" update="@form" />
+						<f:selectItems value="#{screensCtrl.screens}"  var="scr" itemLabel="#{scr.title}" itemValue="#{scr.id}"/>
+				</p:selectOneMenu>
+			</p:panelGrid>
+			<p:dataGrid var="scr" value="#{screensCtrl.screens}" columns="3"  id="gridscreens" widgetVar="gridscreens"
+        rows="4" paginator="true"  emptyMessage=""
+        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        rowsPerPageTemplate="9,12,15">
+        		<p:panel header="#{scr.title}" style="text-align:center">  
+	        		<p:confirmDialog id="dependencies" message="êtes vous sûr de vouloir supprimer cet écran ?"  
+		                header="Suppression de l'écran" severity="alert" widgetVar="dependencies">
+		                <h3>Suppression d'un écran</h3>
+						<p><b>Attention ! </b>&nbsp;En supprimant #{screensCtrl.toDelete.title} Generium procédera à la suppression des éléments suivants </p>
+						<p>
+							Actions :
+							<p:dataList id="acts" value="#{screensCtrl.actions}" var="ac">
+								#{ac}
+							</p:dataList>
+							Documents :
+							<p:dataList id="docs" value="#{screensCtrl.documents}" var="dc">
+								#{dc}
+							</p:dataList>
+							Processus :
+							<p:dataList id="procs" value="#{screensCtrl.processes}" var="ps">
+								#{ps}
+							</p:dataList>
+						</p>
+						<p>Voulez vous continuer ?</p>
+						<p:commandButton value="Supprimer" actionListener="#{screensCtrl.doDelete}" update="@form" oncomplete="dependencies.hide()" />&nbsp;&nbsp;
+						<p:commandButton value="Annuler" actionListener="#{screensCtrl.cancelDelete}" update="@form" oncomplete="dependencies.hide()" /> 
+					</p:confirmDialog>
+  		        	<center>
+						<p:graphicImage value="img/form-view.png" rendered="#{scr.CWindowtype.id==2}"/>   
+     		        	<p:graphicImage value="img/table-view.png" rendered="#{scr.CWindowtype.id==1}"/>
+     		        	<br/>
+     		        	<h:outputText value="#{scr.stepDescription}" />   <br/>
+						<p:commandButton icon="ui-icon-close" styleClass="ui-icon-white" 
+							action="#{screensCtrl.constructDependencies}" oncomplete="dependencies.show()">
+							<f:setPropertyActionListener value="#{scr}"   
+                            target="#{screensCtrl.toDelete}"  />
+						</p:commandButton>
+						<p:commandButton icon="ui-icon-pencil"  styleClass="ui-icon-white" 
+							action="#{screensCtrl.loadWindow}" ajax="false">
+							<f:setPropertyActionListener value="#{scr}"   
+                            target="#{screensCtrl.toLoad}"  />
+						</p:commandButton>
+                </center>
+        		</p:panel>
+        	
+        	</p:dataGrid>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s4.png" />
+		</p:notificationBar>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez consulter l'ensemble des écrans de votre application <br />
+		Vous pouvez en créer, les modifier et les supprimer 
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>

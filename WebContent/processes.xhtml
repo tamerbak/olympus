@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="top-bar">
+				<h1>Conception des processus</h1>
+			</div><br />
+			<div class="select-bar">
+		    	<div class="breadcrumbs">Créer un nouveau processus</div>
+			</div>
+			
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="Sauvegarder" actionListener="#{processCtrl.save}" icon="ui-icon-disk" update="@form" />
+				<p:menuitem ajax="false" value="Etape suivante" action="procsynthesis" icon="ui-icon-seek-end" />
+			</p:menubar>
+			<p:panelGrid columns="2" style="width:100%">
+				<f:facet name="header">Processus</f:facet>
+				<p:outputLabel for="processtitle" value="Titre" />
+				<p:inputText id="processtitle" value="#{processCtrl.processtitle}"/>
+				<p:outputLabel for="selectScreen" value="Ecran" />
+				<p:selectOneMenu id="selectScreen" value="#{processCtrl.selectedScreen}"  effect="fade" style="width:160px;"  >
+					<f:selectItems value="#{processCtrl.windows}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}" ></f:selectItems>
+				</p:selectOneMenu>
+				<p:commandButton value="Ajouter noeud" actionListener="#{processCtrl.addNode}" update="processmap" />
+			</p:panelGrid>
+			
+			<p:panel  widgetVar="parampanel" style="width:100%">
+				<f:facet name="header">Paramétres</f:facet>
+				<p:panelGrid columns="2" style="width:100%">
+					<p:outputLabel for="partitle" value="Titre" />
+					<p:inputText id="partitle" value="#{processCtrl.partitle}"/>
+					<p:outputLabel for="pardesc" value="Description" />
+					<p:inputTextarea id="pardesc" value="#{processCtrl.pardesc}"/>
+				</p:panelGrid>
+				<p:dataTable emptyMessage="" id="paramTable" value="#{processCtrl.parameters}" var="paramet" selection="#{processCtrl.selectedParameters}" style="width:100%"
+					selectionMode="multiple" rowKey="#{paramet.label}">
+					<p:column headerText="Nom">
+						<h:outputText value="#{paramet.label}"/>
+					</p:column>
+					<p:column headerText="Type">
+						<h:outputText value="#{paramet.type}"/>
+					</p:column>
+				</p:dataTable>
+				<p:commandButton value="Ajouter noeud" actionListener="#{processCtrl.addPNode}" update="processmap" />
+			</p:panel>
+			
+			<p:mindmap id="processmap" value="#{processCtrl.root}"  style="width:100%;height:600px;border:1px solid black;">  
+      				<p:ajax event="select" listener="#{processCtrl.onNodeSelect}" />
+			</p:mindmap>  
+			
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s7.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez construire un processus de façon graphique 
+		</div>
+		<br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.processes}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

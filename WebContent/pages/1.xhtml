@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+<style>
+.ui-widget {
+    font-size: 12px !important;
+}
+</style>
+</h:head>
+<body>
+<p:ajaxStatus onstart="statusDialog.show()" onsuccess="statusDialog.hide()"/>  
+<p:dialog modal="false" widgetVar="statusDialog" header="Veuillez patienter s'il vous plait"   
+        draggable="false" closable="false" resizable="false">  
+    <img src="#{request.contextPath}/resources/images/ajaxloadingbar.gif" alt="" />  
+</p:dialog> 
+
+<h:form id="form">  
+<p:growl showDetail="true" id="growl"></p:growl>
+<p:layout fullPage="true">  
+    
+    <p:layoutUnit position="west" size="228" header="Options" resizable="false" effect="drop">
+    	 <h3 class="ui-widget ui-widget-header ui-corner-all submenu-title" style="height: 25px;">Structure</h3>
+         <p:commandButton update=":form_nr:cry,:form:growl, :dc_form:dcs, :form_nr:crx,:form_nr:cr" actionListener="#{dataBean.crop1}" style="width: 99%; " value="Nouveau champ singulier"></p:commandButton><br></br>
+         <p:commandButton update=":form_nr:cry,:form:growl, :dc_form:dcs, :form_nr:crx,:form_nr:cr" actionListener="#{dataBean.crop2}" style="width: 99%; margin-top: 10px;"  value="Nouveau tableau"></p:commandButton><br></br>
+         <p:commandButton update=":form_nr:cry,:form:growl, :dc_form:dcs, :form_nr:crx,:form_nr:cr"  style="width: 99%; margin-top: 10px;" actionListener="#{dataBean.crop3}" value="Nouvelle relativité"></p:commandButton><br></br>
+         <h3 class="ui-widget ui-widget-header ui-corner-all submenu-title" style="height: 25px;">Edition</h3>
+         <p:commandButton update=":form_esda:sdse, :form:growl" style="width: 99%; margin-top: 10px;" value="Editer un champs singulier" actionListener="#{dataBean.osde}"></p:commandButton><br></br>
+         <p:commandButton update=":form_et:tse, :form:growl" style="width: 99%; margin-top: 10px;" value="Editer un tableau" actionListener="#{dataBean.ote}"></p:commandButton><br></br>
+         <p:commandButton update=":form:growl, :form_er:rse, :form_er:rsxe, :form_er:re, :form_er:rsye" style="width: 99%; margin-top: 10px;" value="Editer une relativité" actionListener="#{dataBean.ore}"></p:commandButton><br></br>
+         <p:commandButton update=":form_ssd:ssds, :form:growl" style="width: 99%; margin-top: 10px;" value="Supprimer un champs singulier" actionListener="#{dataBean.ossd}"></p:commandButton><br></br>
+         <p:commandButton update=":form_st:ts, :form:growl" style="width: 99%; margin-top: 10px;" value="Supprimer un tableau" actionListener="#{dataBean.ost}"></p:commandButton>
+         <p:commandButton update=":form_sr:rs, :form:growl" style="width: 99%; margin-top: 10px;" value="Supprimer une relativité" actionListener="#{dataBean.osr}" ></p:commandButton><br></br>
+         <p:commandButton update=":form:growl, :dc_form:dcs" oncomplete="dc.show();" style="width: 99%; margin-top: 10px;" value="Afficher le pilote courant" actionListener="#{dataBean.dc}">
+         </p:commandButton><br></br>
+         <p:commandButton update=":form:growl" actionListener="#{dataBean.save}" style="width: 99%; margin-top: 10px;" value="Enregistrer"></p:commandButton>
+    </p:layoutUnit>  
+  
+    <p:layoutUnit position="east" size="228" header="Documents" resizable="false" effect="drop">  
+         <p:commandButton onclick="nf.show();" style="width: 99%; margin-top: 10px;" value="Nouveau document"></p:commandButton><br></br>
+         <p:commandButton style="width: 99%; margin-top: 10px;" value="Editer un document"></p:commandButton><br></br>
+         <p:commandButton onclick="sf.show();" style="width: 99%; margin-top: 10px;"  value="Supprimer un document"></p:commandButton><br></br>
+         <p:commandButton update=":form_doc:documents" style="width: 99%; margin-top: 10px;" actionListener="#{dataBean.refreshd}" value="Liste des documents"></p:commandButton><br></br>
+         <h3 class="ui-widget ui-widget-header ui-corner-all submenu-title" style="height: 25px;">Pilote</h3>
+         <p:commandButton onclick="np.show();" style="width: 99%; margin-top: 10px;"  value="Nouveau pilote"></p:commandButton><br></br>
+         <p:commandButton style="width: 99%; margin-top: 10px;"  value="Editer un pilote"></p:commandButton><br></br>
+         <p:commandButton style="width: 99%; margin-top: 10px;"  value="Supprimer un pilote"></p:commandButton><br></br>
+         <p:commandButton update=":form_pil:pilotes" style="width: 99%; margin-top: 10px;" actionListener="#{dataBean.refreshp}" value="Liste des pilotes"></p:commandButton><br></br>
+         <div style="margin-top: 30%; text-align: center;">
+         <h:outputText id="fc" value="Document courant:  #{dataBean.documentchoisie}"></h:outputText>
+         </div>
+         <div style="margin-top: 3%; text-align: center;">
+         <h:outputText id="pc" value="Pilote courant:  #{dataBean.pilotechoisi}"></h:outputText>
+         </div>
+    </p:layoutUnit>  
+  
+    <p:layoutUnit position="center" size="228" header="Document chargé" resizable="false"  effect="drop">  
+         <p:imageCropper id="cropper" value="#{dataBean.ci}"
+		    		image="/resources/document/#{dataBean.documentchoisie}"  />
+	</p:layoutUnit>  
+
+
+
+</p:layout>  
+</h:form>  
+  
+
+<p:dialog resizable="false" draggable="false" modal="false" header="Nouveau champ singulier" widgetVar="nsda" showEffect="clip" hideEffect="clip" height="100" width="400">
+  <h:form id="form_crop1">
+  <center><p:panelGrid columns="2" > 
+  <h:outputText value="Identifiant: "></h:outputText>
+  <p:selectOneMenu value="#{dataBean.nsdi}" >
+  	<f:selectItems value="#{dataBean.fields}" var="attr" itemLabel="#{attr.attribute}" itemValue="#{attr.dataReference}" />
+  </p:selectOneMenu>
+  <p:inputText  value="#{dataBean.nsdi}"></p:inputText>
+  <f:facet name="footer">  
+   <center> <p:commandButton update=":form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr" oncomplete="nsda.hide()" actionListener="#{dataBean.nsd}" value="Ajouter"></p:commandButton></center>
+  </f:facet>  
+	</p:panelGrid>
+  </center>
+  
+  </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Editer un champ singulier" widgetVar="esda" showEffect="clip" hideEffect="clip" height="120" width="400">
+  <h:form id="form_esda">
+  <center><p:panelGrid columns="2" >  
+ 
+    <h:outputText value="Champs à editer: "></h:outputText>
+    <p:selectOneMenu  id="sdse" value="#{dataBean.sdae}">
+ 	<f:selectItem itemLabel="Champ singulier à éditer: " itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.sdes}" var="sde" itemLabel="#{sde}" itemValue="#{sde}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+ 	<h:outputText value="Identifiant: "></h:outputText>
+    <p:inputText style="width: 100%;" value="#{dataBean.sdaei}"></p:inputText>
+  
+  <f:facet name="footer">  
+    <center><p:commandButton update=":form:growl, :form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr" oncomplete="esda.hide()" actionListener="#{dataBean.esd}" value="Editer"></p:commandButton></center>
+  </f:facet>  
+	</p:panelGrid> 
+	</center>
+	</h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Editer un tableau" widgetVar="et" showEffect="clip" hideEffect="clip" height="250" width="400">
+  <h:form id="form_et">
+  
+  
+  <p:dataTable id="headers" var="h" editable="true"
+    value="#{dataBean.hse}" style="width: 100%; margin-top: 5%;">
+    
+    <p:ajax event="rowEdit"  listener="#{dataBean.onEdite}" />  
+  
+    <f:facet name="header">  
+    <center><p:commandButton oncomplete="nhe.show();" value="Ajouter un header"></p:commandButton></center>
+ 	</f:facet> 
+    
+    <p:column headerText="Headers" >  
+            <p:cellEditor>  
+                <f:facet name="output">  
+                    <h:outputText value="#{h.nom}" />  
+                </f:facet>  
+                <f:facet name="input">  
+                    <p:inputText value="#{h.nom}" />  
+                </f:facet>  
+            </p:cellEditor>  
+    </p:column> 
+    
+    <p:column >  
+    <p:rowEditor />  
+    </p:column>  
+ 	 
+ 	<p:column headerText="" >  
+    <center><p:commandButton update=":form_et" action="#{dataBean.onRemovee}" value="S">
+     <f:setPropertyActionListener target="#{dataBean.hsase}" value="#{h.nom}" />
+    </p:commandButton></center>
+ 	</p:column>  
+ 	
+ 	</p:dataTable>
+  
+  
+  <center><p:panelGrid columns="2" >  
+ 
+  <h:outputText value="Tableau à editer: "></h:outputText>
+  <p:selectOneMenu style="width: 100%;" id="tse" value="#{dataBean.tae}">
+ 	<f:selectItem itemLabel="Tableau à éditer: " itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.tes}" var="te" itemLabel="#{te}" itemValue="#{te}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+  <h:outputText value="Identifiant: "></h:outputText>
+  <p:inputText style="width: 100%;" value="#{dataBean.tei}"></p:inputText>
+  
+  <f:facet name="footer">  
+    <center><p:commandButton update=":form:growl, :form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr" oncomplete="et.hide()" actionListener="#{dataBean.et}" value="Editer"></p:commandButton></center>
+ </f:facet>  
+	</p:panelGrid>  </center> </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Editer une relativité" widgetVar="er" showEffect="clip" hideEffect="clip" height="250" width="400">
+  <h:form id="form_er">
+  <center><p:panelGrid columns="2">  
+ 
+  	<h:outputText value="Relativité à editer: "></h:outputText>
+    
+    <p:selectOneMenu style="width: 100%;" id="rse" value="#{dataBean.rae}">
+ 	<f:selectItem itemLabel="Relativité à éditer: " itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.rs}" var="r" itemLabel="#{r}" itemValue="#{r}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+    <h:outputText value="Identifiant: "></h:outputText>
+    
+    <p:inputText style="width: 100%;" value="#{dataBean.raei}"></p:inputText>
+  	
+  	<h:outputText value="Champs relatif : "></h:outputText>
+    
+    <p:selectOneMenu style="width: 100%;" id="re" value="#{dataBean.re}">
+ 	<f:selectItem itemLabel="Champs relatif : " itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.r}" var="r" itemLabel="#{r}" itemValue="#{r}"></f:selectItems>
+ 	</p:selectOneMenu> 
+ 	<h:outputText value="Réference-x: "></h:outputText>
+    
+    <p:selectOneMenu style="width: 100%;" id="rsxe" value="#{dataBean.raeix}">
+ 	<f:selectItem itemLabel="Composant referentiel x: " itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.rsx}" var="r" itemLabel="#{rx}" itemValue="#{rx}"></f:selectItems>
+ 	</p:selectOneMenu> 
+ 	
+  	<h:outputText value="Réference-y: "></h:outputText>
+    
+  	<p:selectOneMenu style="width: 100%;" id="rsye" value="#{dataBean.raeiy}">
+ 	<f:selectItem itemLabel="Composant referentiel y: " itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.rsy}" var="r" itemLabel="#{ry}" itemValue="#{ry}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	 
+ 	 <h:outputText value="Type: "></h:outputText>
+ 	 
+ 	<p:selectOneMenu style="width: 100%;" value="#{dataBean.tri}">
+ 	<f:selectItem itemLabel="Type relatif" itemValue=""></f:selectItem>
+ 	<f:selectItem itemLabel="Horizontal" itemValue="h"></f:selectItem>
+ 	<f:selectItem itemLabel="Verticale" itemValue="v"></f:selectItem>
+ 	<f:selectItem itemLabel="Bidirectionnel" itemValue="b"></f:selectItem>
+ 	</p:selectOneMenu>
+    
+  <f:facet name="footer">  
+    <center><p:commandButton update=":form:growl, :form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr" oncomplete="er.hide()" actionListener="#{dataBean.er}" value="Editer"></p:commandButton></center>
+  </f:facet>  
+	</p:panelGrid> </center></h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Nouveau tableau" widgetVar="nta" showEffect="clip" hideEffect="clip" height="250" width="400">
+  <h:form  id="form_crop2">
+  
+    <p:dataTable id="headers" var="h" editable="true"
+    value="#{dataBean.hs}" style="width: 100%; margin-top: 5%;">
+    
+    <p:ajax event="rowEdit"  listener="#{dataBean.onEdit}" />  
+  
+    <f:facet name="header">  
+    <center><p:commandButton oncomplete="nh.show();" value="Ajouter un header"></p:commandButton></center>
+ 	</f:facet> 
+    
+    <p:column headerText="Headers" >  
+            <p:cellEditor>  
+                <f:facet name="output">  
+                    <h:outputText value="#{h.nom}" />  
+                </f:facet>  
+                <f:facet name="input">  
+                    <p:inputText value="#{h.nom}" />  
+                </f:facet>  
+            </p:cellEditor>  
+    </p:column> 
+    
+    <p:column >  
+    <p:rowEditor />  
+    </p:column>  
+ 	 
+ 	<p:column headerText="" >  
+    <center><p:commandButton update=":form_crop2" action="#{dataBean.onRemove}" value="S">
+     <f:setPropertyActionListener target="#{dataBean.hsas}" value="#{h.nom}" />
+    </p:commandButton></center>
+ 	</p:column>  
+ 	
+ 	</p:dataTable>
+  
+  
+  <center><p:panelGrid columns="2" style="width: 100%; margin-top: 10%;"> 
+
+  <h:outputText value="Identifiant: "></h:outputText>
+  <p:inputText style="width: 100%;" value="#{dataBean.nti}"></p:inputText>
+  <f:facet name="footer">  
+     <center><p:commandButton update=":form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr"  oncomplete="nta.hide()" actionListener="#{dataBean.nt}" value="Ajouter la table"></p:commandButton></center>
+    </f:facet>  
+	</p:panelGrid>  
+	</center>
+	</h:form>
+</p:dialog>
+
+<p:dialog resizable="false" draggable="false" modal="false" header="Nouveau header" widgetVar="nh" showEffect="clip" hideEffect="clip" height="160" width="400">
+  <h:form  id="form_nh">
+	<center><p:panelGrid columns="2" style="width: 100%; margin-top: 10%;"> 
+	<h:outputText value="Identifiant: "></h:outputText>
+  <p:inputText style="width: 100%;" value="#{dataBean.nhaa}"></p:inputText>
+  <f:facet name="footer">  
+     <center><p:commandButton update=":form_crop2:headers"  oncomplete="nh.hide()" actionListener="#{dataBean.nh}" value="Ajouter"></p:commandButton></center>
+    </f:facet>  
+	</p:panelGrid> </center>
+  </h:form>
+</p:dialog>
+
+<p:dialog resizable="false" draggable="false" modal="false" header="Nouveau header" widgetVar="nhe" showEffect="clip" hideEffect="clip" height="160" width="400">
+  <h:form  id="form_nhe">
+	<center><p:panelGrid columns="2" style="width: 100%; margin-top: 10%;"> 
+	<h:outputText value="Identifiant: "></h:outputText>
+  <p:inputText style="width: 100%;" value="#{dataBean.nhaae}"></p:inputText>
+  <f:facet name="footer">  
+     <center><p:commandButton update=":form_et:headers"  oncomplete="nhe.hide()" actionListener="#{dataBean.nhe}" value="Ajouter"></p:commandButton></center>
+    </f:facet>  
+	</p:panelGrid> </center>
+  </h:form>
+</p:dialog>
+
+
+
+<p:dialog resizable="false" draggable="false" modal="false" header="Nouveau document" widgetVar="nf" showEffect="clip" hideEffect="clip" height="200" width="800">
+	<h:form>
+    <p:fileUpload
+        mode="advanced"
+        fileUploadListener="#{dataBean.handleFileUpload}"
+        allowTypes="/(\.|\/)(gif|jpg|jpeg|gif|png|PNG|GIF|JPG|JPEG)$/" />
+        <center><p:commandButton style="margin-top: 2%;" oncomplete="nf.hide();" value="valider"></p:commandButton></center>	
+  </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Liste des documents" widgetVar="lf" showEffect="clip" hideEffect="clip" height="400" width="400">
+	<h:form id="form_doc">
+ 	<p:dataTable id="documents" var="document"
+ 	 
+ 	value="#{dataBean.documents}">
+ 	<p:column headerText="Documents" >  
+            #{document.id}  
+    </p:column>  
+ 	<p:column headerText="" >  
+    <center><p:commandButton oncomplete="lf.hide();" update=":form:cropper,:form:fc" id="ouvrirdocument" value="O" action="#{dataBean.setcenter}" >
+     <f:setPropertyActionListener target="#{dataBean.documentchoisie}" value="#{document.id}" />
+    </p:commandButton> </center>   
+    </p:column>  
+ 	</p:dataTable>
+    </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Liste des pilotes" widgetVar="lp" showEffect="clip" hideEffect="clip" height="400" width="400">
+	<h:form id="form_pil">
+ 	<p:dataTable id="pilotes" var="pilote"
+ 	  
+ 	value="#{dataBean.pilotes}">
+ 	<p:column headerText="Pilotes" >  
+            #{pilote.nom}  
+    </p:column>  
+ 	<p:column headerText="" >  
+    <center> <p:commandButton oncomplete="lp.hide();" update=":form:pc, :dc_form:dcs, :form_nr:crx,:form_nr:cr, :form_nr:cry" id="ouvrirdocument" value="O" action="#{dataBean.setpil}" >
+    <f:setPropertyActionListener target="#{dataBean.pilotechoisi}" value="#{pilote.nom}" />
+    </p:commandButton> </center>  
+    </p:column>  
+ 	</p:dataTable>
+    </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Nouvelle relativité" widgetVar="nr" showEffect="clip" hideEffect="clip" height="220" width="350">
+	<h:form id="form_nr">
+	<center>
+	<center><p:panelGrid columns="2" >  
+  
+	<h:outputText value="Nom :"></h:outputText>
+	<p:inputText style="width: 100%;" value="#{dataBean.rnom}" />
+	
+	<h:outputText value="Champ relatif :"></h:outputText>
+	<p:selectOneMenu style="width: 100%;" id="cr" value="#{dataBean.cr}">
+ 	<f:selectItem itemLabel="Champ relatif" itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.composants}" var="cr" itemLabel="#{cr}" itemValue="#{cr}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+ 	<h:outputText value="Reference-x :"></h:outputText>
+	<p:selectOneMenu style="width: 100%;" id="crx" value="#{dataBean.crx}">
+ 	<f:selectItem itemLabel="Reference-x" itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.composants}" var="crx" itemLabel="#{crx}" itemValue="#{crx}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+ 	<h:outputText value="Reference-y :"></h:outputText>
+ 	<p:selectOneMenu style="width: 100%;" id="cry"  value="#{dataBean.cry}">
+ 	<f:selectItem itemLabel="Reference-y" itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.composants}" var="cry" itemLabel="#{cry}" itemValue="#{cry}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+ 	<h:outputText value="Type :"></h:outputText>
+ 	<p:selectOneMenu style="width: 100%;" value="#{dataBean.tr}">
+ 	<f:selectItem itemLabel="Type relatif" itemValue=""></f:selectItem>
+ 	<f:selectItem itemLabel="Horizontal" itemValue="h"></f:selectItem>
+ 	<f:selectItem itemLabel="Verticale" itemValue="v"></f:selectItem>
+ 	<f:selectItem itemLabel="Bidirectionnel" itemValue="b"></f:selectItem>
+ 	</p:selectOneMenu>
+ 	
+ 	<f:facet name="footer">  
+     <center><p:commandButton update=":form:growl, :form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr" oncomplete="nr.hide();" actionListener="#{dataBean.nr}" value="Ajouter"></p:commandButton></center>    
+    </f:facet>  
+	</p:panelGrid>  </center>
+	</center>
+    </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Supprimer relativité" widgetVar="sr" showEffect="clip" hideEffect="clip" height="90" width="350">
+	<h:form id="form_sr">
+	
+	<center><p:panelGrid columns="2">  
+	
+	<h:outputText value="Relativité à supprimer :"></h:outputText>
+	
+	<p:selectOneMenu id="rs" value="#{dataBean.ras}">
+ 	<f:selectItem itemLabel="Relativités" itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.rs}" var="rs" itemLabel="#{rs}" itemValue="#{rs}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+ 	<f:facet name="footer">  
+    <center><p:commandButton update=":form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr, :form_sr:rs"  oncomplete="sr.hide();" actionListener="#{dataBean.sr}" value="Supprimer"></p:commandButton></center>
+    </f:facet>  
+	</p:panelGrid> </center>
+    </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Supprimer un champ singulier" widgetVar="ssd" showEffect="clip" hideEffect="clip" height="90" width="350">
+	<h:form id="form_ssd">
+	<center><p:panelGrid columns="2">  
+  	
+  	<h:outputText value="Champs singulier :"></h:outputText>
+  
+	<p:selectOneMenu id="ssds" value="#{dataBean.sdas}">
+ 	<f:selectItem itemLabel="Champs singuliers" itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.sds}" var="sd" itemLabel="#{sd}" itemValue="#{sd}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+ 	<f:facet name="footer">  
+    <center><p:commandButton update=":form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr, :form_ssd:ssds" oncomplete="ssd.hide();" actionListener="#{dataBean.ssd}" value="Supprimer"></p:commandButton></center>
+    </f:facet>  
+	</p:panelGrid>  </center>
+    
+    </h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Supprimer un tableau" widgetVar="st" showEffect="clip" hideEffect="clip" height="90" width="300">
+	<h:form id="form_st">
+	<center><p:panelGrid columns="2">  
+	
+	<h:outputText value="Tableau :"></h:outputText>
+	
+	<p:selectOneMenu id="ts" value="#{dataBean.tas}">
+ 	<f:selectItem itemLabel="Tableaux" itemValue=""></f:selectItem>
+ 	<f:selectItems value="#{dataBean.ts}" var="t" itemLabel="#{t}" itemValue="#{t}"></f:selectItems>
+ 	</p:selectOneMenu>
+ 	
+ 	<f:facet name="footer">  
+    <center><p:commandButton update=":form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr, :form_st:ts" oncomplete="st.hide();" actionListener="#{dataBean.st}" value="Supprimer"></p:commandButton></center>
+    </f:facet>  
+	</p:panelGrid> </center></h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Nouveau pilote" widgetVar="np" showEffect="clip" hideEffect="clip" height="100" width="300">
+	<h:form>
+	
+	<center><p:panelGrid columns="2" >  
+	
+	<h:outputText value="Nom"></h:outputText> 
+ 	<p:inputText style="margin-left: 20px;" value="#{dataBean.npnom}"></p:inputText>
+ 	
+ 	<p:outputLabel  value="Concerne" />
+ 	<p:selectOneMenu id="piloteentity" value="#{dataBean.selectedEntity}" >
+ 		<f:selectItems value="#{dataBean.entities}" var="ent" itemLabel="#{ent.name}" itemValue="#{ent.dataReference}" />
+ 	</p:selectOneMenu>
+ 	
+ 	<f:facet name="footer">  
+    <center><p:commandButton update=":form_nr:cry, :dc_form:dcs, :form_nr:crx,:form_nr:cr" style="margin-top: 2%;" oncomplete="np.hide();" value="Ajouter" actionListener="#{dataBean.np}"></p:commandButton></center>
+    </f:facet>  
+	</p:panelGrid> </center></h:form>
+</p:dialog>
+<p:dialog resizable="false" draggable="false" modal="false" header="Document courant" widgetVar="dc" showEffect="clip" hideEffect="clip" height="400" width="400">
+	<h:form id="dc_form">
+	<h:outputText id="dcs" value="#{dataBean.documentcourantxml}"></h:outputText>
+ 	</h:form>
+</p:dialog>
+
+
+
+</body>
+</html>

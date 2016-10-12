@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{msg['menuitem.title']}
+					<small>#{msg['menuitem.subtitle']}</small>
+				</h3>
+			</div>
+		</div>		
+			<p:dialog id="ldlg" closable="false" widgetVar="ldlg" modal="false" resizable="false" dynamic="false" > 
+				<p:graphicImage value="/img/loading.gif" />
+				<p:spacer width="20" height="10" />
+				<p:outputLabel>#{msg['menuitem.uploading']}</p:outputLabel>
+			</p:dialog>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="#{msg['general.save']}" onstart="ldlg.show();" oncomplete="ldlg.hide();" actionListener="#{menuCtrl.saveMenu}" icon="ui-icon-disk" update="@form" />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="#{menuCtrl.nextToLink}" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:fieldset legend="#{msg['menuitem.new.element']}">
+				<p:panelGrid columns="2" style="width:100%">
+					<f:facet name="header">#{msg['menuitem.new.entry']}</f:facet>
+					<p:outputLabel value="#{msg['menuitem.label.title']}" />
+					<p:inputText id="menutitle" value="#{menuCtrl.menuTitle}" />
+					<p:outputLabel value="#{msg['menuitem.label.level']}"/>
+					<p:selectOneMenu id="menulevel" value="#{menuCtrl.menuLevel}"> 
+						<p:ajax event="change" listener="#{menuCtrl.levelChange}" onstart="ldlg.show();" oncomplete="ldlg.hide();" update="@form" />
+						<f:selectItem itemLabel="#{msg['menuitem.option.section']}" itemValue="1" />
+						<f:selectItem itemLabel="#{msg['menuitem.option.menu']}" itemValue="2" />
+						<f:selectItem itemLabel="#{msg['menuitem.option.submenu']}" itemValue="3" />
+					</p:selectOneMenu>
+					<p:outputLabel rendered="#{menuCtrl.menuLevel eq 3}" value="#{msg['menuitem.option.parent.menu']}" />
+					<p:selectOneMenu id="parentmenu" rendered="#{menuCtrl.menuLevel eq 3}" value="#{menuCtrl.selectedItem}" >
+						<f:selectItem itemLabel="" itemValue="rootMenu"/>
+						<f:selectItems value="#{menuCtrl.menuItemsParents}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}"/>
+					</p:selectOneMenu>
+					<p:outputLabel rendered="#{menuCtrl.menuLevel eq 2}" value="#{msg['menuitem.option.parent.menu']}" />
+					<p:selectOneMenu id="rubriq" rendered="#{menuCtrl.menuLevel eq 2}" value="#{menuCtrl.selectedRubrique}" >
+						<f:selectItems value="#{menuCtrl.rubriques}" var="scr" itemLabel="#{scr.titre}" itemValue="#{scr.id}"/>
+					</p:selectOneMenu>
+					<p:outputLabel for="selectedscreen" rendered="#{menuCtrl.menuLevel eq 3}"  value="#{msg['menuitem.label.screen']}" />
+					<p:selectOneMenu id="selectedscreen" rendered="#{menuCtrl.menuLevel eq 3}"  value="#{menuCtrl.selectedScreen}">
+						<f:selectItems value="#{menuCtrl.screens}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}"/>
+					</p:selectOneMenu>
+				</p:panelGrid> 
+			</p:fieldset>
+			<p:confirmDialog id="dependencies" message="#{msg['menuitem.confirm.dialog.message']}"  
+                header="#{msg['menuitem.confirm.dialog.delete.fields']}" severity="alert" widgetVar="dependencies">
+                <h3>#{msg['menuitem.confirm.dialog.delete.fields.h3']}</h3>
+				<p>
+					<h:outputFormat value="#{msg['menuitem.confirm.dialog.delete.entity.message.attention']}">
+							<f:param value="#{menuCtrl.toDelete.title}" />
+					</h:outputFormat>
+				</p>
+				<p>#{msg['menuitem.confirm.continue']}</p>
+				<p:commandButton value="#{msg['general.delete']}" actionListener="#{menuCtrl.doDelete}" update="@form" oncomplete="dependencies.hide()" />&nbsp;&nbsp;
+				<p:commandButton value="#{msg['general.cancel']}" actionListener="#{menuCtrl.cancelDelete}" update="@form" oncomplete="dependencies.hide()" /> 
+			</p:confirmDialog>
+			<p:fieldset legend="#{msg['menuitem.list.menus']}">
+				<p:dataTable value="#{menuCtrl.menuItems}" var="men" 
+					emptyMessage="" id="menutable">
+					<p:column headerText="#{msg['menuitem.label.title']}">
+						<h:outputText value="#{men.title}" />
+					</p:column>
+					<p:column headerText="#{msg['menuitem.label.grouping']}">
+						<h:outputText value="#{men.isParent?'Oui':'Non'}" />
+					</p:column>
+					<p:column headerText="#{msg['menuitem.option.parent.menu']}">
+						<h:outputText value="#{men.parentName}" />
+					</p:column>
+					<p:column headerText="#{msg['menuitem.label.window']}">
+						<h:outputText value="#{men.window.title}" />
+					</p:column>
+					<p:column headerText="#{msg['general.delete']}">
+						<p:commandButton  value="#{msg['general.delete']}" icon="ui-icon-close" 
+							action="#{menuCtrl.constructDependencies}" oncomplete="dependencies.show()">
+							<f:setPropertyActionListener value="#{men}"   
+                            	target="#{menuCtrl.toDelete}"  />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:fieldset>
+			
+			</div>
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s8.png" />
+		</p:notificationBar>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez créer le menu de l'application <br />
+		Le menu a deux niveaux, le premier niveau concerne les rubriques alors que le second représente les écrans accessibles 
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>

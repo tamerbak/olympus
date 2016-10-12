@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<!-- BEGIN HEAD -->
+<h:head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+	<title>Generium</title>
+	
+	<!-- BEGIN GLOBAL MANDATORY STYLES -->
+	
+	<link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/plugins/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/style-metro.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/style-responsive.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/themes/blue.css" rel="stylesheet" type="text/css"/>
+	<link href="css/pf-theme-excite-bike.css" rel="stylesheet" type="text/css" />
+
+	<!-- END GLOBAL MANDATORY STYLES -->
+	<!-- BEGIN PAGE LEVEL PLUGIN STYLES -->
+
+	<!-- END PAGE LEVEL PLUGIN STYLES -->
+	<!-- BEGIN PAGE LEVEL STYLES -->
+
+	<!-- END PAGE LEVEL STYLES -->
+	
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="stylesheet" href="lib/codemirror.css" />
+    <script src="lib/codemirror.js"></script>
+    <script src="mode/javascript/javascript.js"></script>
+    <script src="addon/fold/foldcode.js"></script>
+</h:head>
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+<h:body class="page-header-fixed">
+	<f:view>
+
+			<!-- BEGIN HEADER -->
+			<div class="header navbar navbar-inverse navbar-fixed-top">
+				<!-- BEGIN TOP NAVIGATION BAR -->
+				<div class="navbar-inner">
+					<div class="container-fluid">
+						<!-- BEGIN LOGO -->
+						<a class="brand" href="sic/index.html"> <img
+							src="img/logo-generium.320x72.png" alt="logo" />
+						</a>
+						<!-- END LOGO -->
+						<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+						<a href="#" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse"> 
+							<img src="assets/img/menu-toggler.png" alt="" />
+						</a>
+						<!-- END RESPONSIVE MENU TOGGLER -->
+						<!-- BEGIN TOP NAVIGATION MENU -->
+						<ul class="nav pull-right">
+							<li id="sign-out">
+								<p:commandLink action="#{preanalyseCtrl.logout}"  styleClass="icon-signout"/>
+							</li>
+						</ul>
+						<!-- END TOP NAVIGATION MENU -->
+					</div>
+				</div>
+				<!-- END TOP NAVIGATION BAR -->
+			</div>
+			<!-- END HEADER -->
+
+			<!-- BEGIN CONTAINER -->
+			<div class="page-container row-fluid">
+				<!-- BEGIN SIDEBAR -->
+				<div class="page-sidebar-wrapper">
+					<ui:include src="./angramenu.xhtml" />
+				</div>
+				<!-- END SIDEBAR -->
+
+				<!-- BEGIN PAGE -->
+				<div class="page-content-wrapper">
+					<div class="page-content" style="min-height:783px">
+						<div class="container-fluid">
+							<ui:insert name="contenu" />
+						</div>
+					</div>
+				</div>
+				<!-- END PAGE -->
+			</div>
+			<!-- END CONTAINER -->
+
+			<!-- BEGIN FOOTER -->
+			<div class="footer">
+				<div class="footer-inner">2015 GAM Entreprise</div>
+				<div class="footer-tools">
+					<span class="go-top"> <i class="icon-angle-up"></i>
+					</span>
+				</div>
+			</div>
+			<!-- END FOOTER -->
+			<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+				<!-- BEGIN CORE PLUGINS -->
+		<!-- 		<script src="assets/plugins/jquery-1.10.1.min.js" type="text/javascript"></script>	 -->
+				<script src="assets/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+				<!-- IMPORTANT! Load jquery-ui-1.10.1.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+				<script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+				<script src="assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js" type="text/javascript" ></script>
+				<!--[if lt IE 9]>
+				<script src="assets/plugins/excanvas.min.js"></script>
+				<script src="assets/plugins/respond.min.js"></script>  
+				<![endif]-->   
+				<script src="assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+				<script src="assets/plugins/jquery.blockui.min.js" type="text/javascript"></script>  
+				<script src="assets/plugins/jquery.cookie.min.js" type="text/javascript"></script>
+				<script src="assets/plugins/uniform/jquery.uniform.min.js" type="text/javascript" ></script>
+				<!-- END CORE PLUGINS -->
+				<script src="assets/scripts/app.js"></script>      
+				<script>
+					jQuery(document).ready(function() {    
+					   App.init();
+					});
+				</script>
+			
+			<!-- END JAVASCRIPTS -->
+	</f:view>
+</h:body>
+<!-- END BODY -->
+</html>

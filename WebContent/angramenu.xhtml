@@ -1,0 +1,165 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<div class="page-sidebar nav-collapse collapse">
+		<!-- BEGIN SIDEBAR MENU -->
+		<ul class="page-sidebar-menu">
+		
+		
+			<li>
+				<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+				<div class="sidebar-toggler hidden-phone"></div> <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+			</li>
+			<li class="start ">
+				<div class="separator-div"></div>
+			</li>
+<!-- 			<li> -->
+<!-- 				BEGIN RESPONSIVE QUICK SEARCH FORM -->
+<!-- 				<div class="sidebar-search"> -->
+<!-- 					<div class="input-box"> -->
+<!-- 						<a href="javascript:;" class="remove"></a> <input -->
+<!-- 							style="background: transparent !important;" type="text" -->
+<!-- 							placeholder="Rechercher..." /> <input type="button" -->
+<!-- 							class="submit" value=" " /> -->
+<!-- 					</div> -->
+<!-- 				</div> END RESPONSIVE QUICK SEARCH FORM -->
+<!-- 			</li> -->
+<!-- 			<li class="start active"><a href="jurid-dashboard.xhtml"> <i -->
+<!-- 					class="icon-home"></i> <span class="title">Tableau de bord</span> <span -->
+<!-- 					class="selected"></span> -->
+<!-- 			</a></li> -->
+<!-- ================== begin informations de base ==========================-->
+			<li class="start ">
+				<a href="javascript:;">
+					<i class="icon-info"></i>
+					<span 	class="title">#{msg['angramenu.base.infos']}</span> <span class="arrow "></span>
+				</a>
+				<ul class="sub-menu">
+					<li class="start ">
+						<a href="application.xhtml">
+							<span class="title">#{msg['angramenu.application']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="description.xhtml">
+							<span class="title">#{msg['angramenu.fonctions']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="entities.xhtml">
+							<span class="title">#{msg['angramenu.dictionary']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="organizations.xhtml">
+							<span class="title">#{msg['angramenu.organizations']}</span> 
+						</a>
+					</li>
+					<li class="start">
+						<a href="parpkgs.xhtml">
+							<span class="title">#{msg['angramenu.paramtering']}</span> 
+						</a>
+					</li>
+				</ul>
+			</li>
+			<!-- ================== end informations de base ==========================-->
+			<!-- ================== begin composants ==========================-->
+			<li>
+				<a href="javascript:;"> 
+					<i class="icon-puzzle-piece"></i>
+					<span 	class="title">#{msg['angramenu.componenets']}</span> <span class="arrow "></span>
+				</a>
+				<ul class="sub-menu">
+					<li class="start ">
+						<a href="screens.xhtml">
+							<span class="title">#{msg['angramenu.screens']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="actsynthesis.xhtml">
+							<span class="title">#{msg['angramenu.actions']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="docsynthesis.xhtml">
+							<span class="title">#{msg['angramenu.documents']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="proceduresynthesis.xhtml">
+							<span class="title">#{msg['angramenu.processus']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="callout-synthesis.xhtml">
+							<span class="title">#{msg['angramenu.callouts']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="resources-synthesis.xhtml">
+							<span class="title">Ressources d'application</span> 
+						</a>
+					</li>
+				</ul>
+			</li>
+			<!-- ================== end composants ==========================-->
+			<!-- ================== begin parmateres ==========================-->
+			<li>
+				<a href="javascript:;"> 
+					<i class="icon-cogs"></i>
+					<span 	class="title">#{msg['angramenu.parameters']}</span> <span class="arrow "></span>
+				</a>
+				<ul class="sub-menu">
+					<li class="start ">
+						<a href="menuitem.xhtml">
+							<span class="title">#{msg['angramenu.menu']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="rolesynthesis.xhtml">
+							<span class="title">#{msg['angramenu.security']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="alerts.xhtml">
+							<span class="title">#{msg['angramenu.alerts']}</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="wssynthesis.xhtml">
+							<span class="title">#{msg['angramenu.dashboard']}</span> 
+						</a>
+					</li>
+				</ul>
+			</li>
+			<!-- ================== end parmateres ==========================-->
+			<!-- ================== begin parmateres ==========================-->
+			<li>
+				<a href="javascript:;"> 
+					<i class="icon-cogs"></i>
+					<span 	class="title">Edition</span> <span class="arrow "></span>
+				</a>
+				<ul class="sub-menu">
+					<li class="start ">
+						<a href="dashboardlist.xhtml">
+							<span class="title">Tableaux de bord décisionnels</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="diagram_class.xhtml">
+							<span class="title">Diagramme de classes</span> 
+						</a>
+					</li>
+					<li class="start ">
+						<a href="wf.xhtml">
+							<span class="title">Diagramme de Workflow</span> 
+						</a>
+					</li>
+				</ul>
+			</li>
+			<!-- ================== end parmateres ==========================-->
+		</ul>
+		<!-- END SIDEBAR MENU -->
+	</div>
+</ui:composition>

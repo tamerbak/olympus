@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Generium</title>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<style media="all" type="text/css">@import "css/all.css";</style>
+</h:head>
+<h:body style="background-image:url(img/bg.png);background-repeat:no-repeat;">
+<f:view>
+	<h:form>
+	
+	<table border="0">
+		<tr style="height:200px;">
+			<td colspan="3">
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<p:graphicImage url="img/page-logo.png"></p:graphicImage>
+			</td>
+		</tr>
+		<tr style="height:200px;">
+			<td style="width:800px;"></td>
+			<td style="width:300px;height:200px;">
+				<p:panel>
+					<f:facet name="header">
+						Authentification
+					</f:facet>
+					<p:panelGrid columns="2" cellpadding="5" style="width:100%; height:100%">
+						<h:outputLabel for="user_name" value="Identifiant" />
+						<h:inputText id="user_name" value="#{loginCtrl.userName}" required="true"/>
+						<h:outputLabel for="password" value="Mot de passe" />
+						<h:inputSecret id="password" value="#{loginCtrl.password}" required="true"/>
+					</p:panelGrid>
+					<f:facet name="footer">
+						<p:commandButton action="#{loginCtrl.goLogin}" value="Authentifier" ajax="false"></p:commandButton>
+					</f:facet>
+				</p:panel>
+			</td>
+			<td style="width:100px"></td>
+		</tr>
+		<tr><td colspan="3"></td></tr>
+	</table>
+		
+	<p:growl id="growl" showDetail="true" sticky="true" />  
+			
+	</h:form>
+</f:view>
+</h:body>
+</html>

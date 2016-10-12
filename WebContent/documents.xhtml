@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{msg['documents.title']}
+				<small>#{msg['documents.subtitle']}</small></h3>
+			</div>
+		</div>
+			
+			<p:dialog widgetVar="helpdoc"  hideEffect="blur">
+				<h3>#{msg['documents.title']}</h3>
+				<p>Les rapprots pris en charge par Generium sont de type Jasper</p>
+				<p>
+				Il faut regrouper tous les fichiers constituants le document (jrxml, images, ...) dans un fichier zip sans dossier parent<br />
+				Et assurez vous que le fichier principal soit nommé main.jrxml
+				</p>
+			</p:dialog>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="#{msg['general.save']}" actionListener="#{documentCtrl.saveDocument}" icon="ui-icon-disk" update="@form" />
+				<p:menuitem value="#{msg['general.add']}" actionListener="#{documentCtrl.addParam}" icon="ui-icon-plusthick" update="paramTable"/>
+				<p:menuitem value="#{msg['general.help']}" icon="ui-icon-help" onclick="helpdoc.show();" />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="docsynthesis" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			
+					<p:fieldset>
+						<p:panelGrid columns="2" style="width:100%" >
+							<p:outputLabel value="#{msg['documents.screen']}"/>
+							<p:selectOneMenu id="ddscreen" value="#{documentCtrl.selectedScreen}"  effect="fade" style="width:160px;"  >
+								<f:selectItems value="#{documentCtrl.windows}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}" ></f:selectItems>
+							</p:selectOneMenu>
+							<p:outputLabel value="#{msg['documents.label.title']}"/>
+							<p:inputText id="doctitle" value="#{documentCtrl.documentTitle}"/>	
+							<p:outputLabel value="#{msg['documents.label.description']}"/>
+							<p:inputTextarea id="actionDescription" autoResize="true" value="#{documentCtrl.documentDescription}"/>
+							<p:outputLabel value="#{msg['documents.label.data.parameter']}" />
+							<p:selectOneMenu id="parammode" value="#{documentCtrl.parameterMode}"  effect="fade" style="width:160px;"  >
+								<f:selectItem itemLabel="#{msg['documents.option.none']}" itemValue="N"/>
+								<f:selectItem itemLabel="#{msg['documents.option.unique.record']}" itemValue="S"/>
+								<f:selectItem itemLabel="#{msg['documents.option.multiple.records']}Enregistrements multiples" itemValue="M"/>
+							</p:selectOneMenu>					
+							<p:outputLabel value="Archive du document (zip)"/>
+							<p:fileUpload id="jrxmldoc" fileUploadListener="#{documentCtrl.handleFileUpload}"  
+					            mode="advanced"
+					            multiple="false"
+					            sizeLimit="10000000"   
+					            allowTypes="/(\.|\/)(zip)$/"/>
+					            
+						</p:panelGrid>
+						
+					</p:fieldset>
+					
+					<p:fieldset>
+						<p:panelGrid columns="2" style="width:100%;">
+							<p:outputLabel value="#{msg['documents.label.parameter']}"/>
+							<p:inputText id="paramlabel" value="#{documentCtrl.parameterLabel}"/>						
+							<p:outputLabel value="#{msg['documents.label.type']}"/>
+							<p:selectOneMenu id="paramtype" value="#{documentCtrl.parameterType}"  effect="fade" style="width:160px;"  >
+								<f:selectItem itemLabel="#{msg['documents.option.integer']}" itemValue="I" />
+								<f:selectItem itemLabel="#{msg['documents.option.decimal']}" itemValue="F" />
+								<f:selectItem itemLabel="#{msg['documents.option.date']}" itemValue="D" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panel header="#{msg['documents.label.parameters']}">
+						<p:dataTable id="paramTable" value="#{documentCtrl.parameters}" var="paramet" emptyMessage="Aucun paramètre" >
+							<p:column headerText="#{msg['documents.table.header.name']}">
+								<h:outputText value="#{paramet.label}"/>
+							</p:column>
+							<p:column headerText="#{msg['documents.table.header.type']}">
+								<h:outputText value="#{paramet.type}"/>
+							</p:column>
+						</p:dataTable>
+						</p:panel>
+					</p:fieldset>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s6.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+			Vous pouvez renseigner dans cette étape les documents que vous avez produit sous Jasper reports.<br/><br/>
+			Vous avez aussi la possibilité d'associer certains paramétres qui seront interprétés et injectés par Generium lors de l'exécution<br/>
+			Si Generium ne parvient pas à retrouver le paramétres il vous demandera de rensigner sa valeur.
+		</div>
+		<br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.documents}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+	
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{msg['description.title']}
+				<small>#{msg['description.subtitle']}</small></h3>
+			</div>
+		</div>
+			
+			<p:menubar>
+				<p:menuitem value="#{msg['general.add']}" actionListener="#{descriptionCtrl.add}" update="@form" icon="ui-icon-plusthick" ajax="true" />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="#{descriptionCtrl.suivant}" icon="ui-icon-seek-end" />
+			</p:menubar>
+			<div class="table">
+			
+			<p:fieldset legend="#{msg['description.fieldset.legend.fonction']}">
+				<p:panelGrid style="width:100%">
+					<p:row>
+						<p:column>#{msg['description.label.title']}</p:column>
+						<p:column><p:inputText value="#{descriptionCtrl.title}"></p:inputText></p:column>
+					</p:row>
+					<p:row>
+						<p:column>#{msg['description.label.description']}</p:column>
+						<p:column><p:inputTextarea value="#{descriptionCtrl.description}"></p:inputTextarea>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+				
+				
+			</p:fieldset>
+			<p:contextMenu>
+        		<p:menuitem value="#{msg['general.delete']}" update="seqdatatable,dependencies" icon="ui-icon-close" actionListener="#{descriptionCtrl.constructDependencies}" oncomplete="dependencies.show()" />  
+			</p:contextMenu>
+			<p:fieldset legend="#{msg['description.fieldset.legend.fonctions']}" id="seqtable" >
+				<p:dataTable  id="seqdatatable" widgetVar="seqdatatable" var="sequence" value="#{descriptionCtrl.sequences}" scrollable="true" scrollHeight="150" 
+					emptyMessage="" selection="#{descriptionCtrl.selectedSequence}" selectionMode="single" rowKey="#{sequence.title}" >
+					<p:column headerText="#{msg['description.label.title']}" width="200">
+						<h:outputText value="#{sequence.title}"></h:outputText>
+					</p:column>
+					<p:column headerText="#{msg['description.label.description']}" width="300">
+						<h:outputText value="#{sequence.description}"></h:outputText>
+					</p:column>
+				</p:dataTable>
+				
+			</p:fieldset>
+			<p:confirmDialog id="dependencies" message="#{msg['description.confirm.dialog.delete.fonction']}"  
+                header="#{msg['description.confirm.dialog.header']}" severity="alert" widgetVar="dependencies">
+                <h3>#{msg['description.confirm.dialog.header.h3']}</h3>
+				<p><h:outputFormat value="#{msg['description.delete.confirmation.message.attention']}">
+						<f:param value="#{descriptionCtrl.selectedSequence.title}" />
+					</h:outputFormat></p>
+				<p>
+					#{msg['description.screens']} :
+					<p:dataList id="wins" value="#{descriptionCtrl.windows}" var="wi">
+						#{wi}
+					</p:dataList>
+					#{msg['description.actions']} :
+					<p:dataList id="acts" value="#{descriptionCtrl.actions}" var="ac">
+						#{ac}
+					</p:dataList>
+					#{msg['description.documents']} :
+					<p:dataList id="docs" value="#{descriptionCtrl.documents}" var="dc">
+						#{dc}
+					</p:dataList>
+					#{msg['description.documents']} :
+					<p:dataList id="procs" value="#{descriptionCtrl.processes}" var="ps">
+						#{ps}
+					</p:dataList>
+				</p>
+				<p>#{msg['description.continue']}</p>
+				<p:commandButton value="#{msg['general.delete']}" actionListener="#{descriptionCtrl.doDelete}" update="@form" oncomplete="dependencies.hide()" />&nbsp;&nbsp;
+				<p:commandButton value="#{msg['general.cancel']}" actionListener="#{descriptionCtrl.cancelDelete}" update="@form" oncomplete="dependencies.hide()" /> 
+			</p:confirmDialog>
+			</div>
+
+	</h:form>
+	</ui:define>
+	
+	<ui:define name="help">
+		<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s2.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+			La description fonctionnelle concerne les fonctions globales de l'application. Un exemple est l'application de gestion commerciale, dont les fonctions sont : La vente, les achats et la gestion de stock
+			<br/>Il vous suffit de penser de façon globale et macroscopique à ce que fait votre application
+		</div>
+		<br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.functions}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+		
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

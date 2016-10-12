@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+			<div class="row-fluid">
+				<div class="col-md-12">
+					<h3 class="page-title">Actions
+					<small>Définition des calcules sur la base des scripts ProtoLANG</small></h3>
+				</div>
+			</div>			
+			
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="Sauvegarder" actionListener="#{actionCtrl.saveAction}" icon="ui-icon-disk" oncomplete="wiz.loadStep(wiz.cfg.steps [0], true)" />
+				<p:menuitem value="Ajouter argument" actionListener="#{actionCtrl.addAttribute}" icon="ui-icon-document" oncomplete="wiz.loadStep(wiz.cfg.steps [0], true)" update="plcscript" />
+				<p:menuitem value="Etape suivante" action="actsynthesis" icon="ui-icon-seek-end" />
+			</p:menubar>
+			<p:growl id="growl" showDetail="true" sticky="true" />  
+						
+			<p:wizard backLabel="Précédent" widgetVar="wiz" nextLabel="Suivant" title="Actions">
+				<p:tab id="actiondefinition" title="Définition de l'action" style="height:300px;">
+					<p:fieldset>
+					
+						<p:panelGrid columns="2" style="width:100%;" >
+							<p:outputLabel for="ddscreen" value="Ecran"/>
+							<p:selectOneMenu id="ddscreen" value="#{actionCtrl.selectedScreen}"  effect="fade" style="width:120px;"  >
+								<p:ajax update="attributeTable" listener="#{actionCtrl.screenChanged}" event="change" ></p:ajax>
+								<f:selectItems value="#{actionCtrl.windows}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}" ></f:selectItems>
+							</p:selectOneMenu>
+							<p:outputLabel for="actionTitle" value="Titre"/>
+							<p:inputText id="actionTitle" value="#{actionCtrl.actionTitle}"/>
+							<p:outputLabel for="plcscript" value="Script"/>
+							<p:inputTextarea id="plcscript" value="#{actionCtrl.plcScript}" style="width:200px;" />
+						</p:panelGrid>
+						<p:fieldset legend="Champs">
+							 
+							<p:dataTable id="attributeTable" var="attrib" value="#{actionCtrl.attributes}" 
+								 selectionMode="single" selection="#{actionCtrl.selectedAttribute}"
+								 rowKey="#{attrib.attribute}">
+								<p:column headerText="Entité">
+									<h:outputText value="#{attrib.entity.name}"/>
+								</p:column>
+								<p:column headerText="Champs">
+									<h:outputText value="#{attrib.attribute}"/>
+								</p:column>
+								<p:column headerText="Type">
+									<h:outputText value="#{attrib.typeLabel}"/>
+								</p:column>
+							</p:dataTable>
+						</p:fieldset>
+						<p:fieldset legend="Paramétres" >
+							<p:panelGrid columns="2">
+								<p:outputLabel for="parameterlabel" value="Paramétre"/>
+								<p:inputText id="parameterlabel" value="#{actionCtrl.parameterLabel}"/>
+								<p:outputLabel for="parametertype" value="Type"/>
+								<p:selectOneMenu id="parametertype" value="#{actionCtrl.parameterType}">
+									<f:selectItem itemLabel="Entier" itemValue="I" />
+									<f:selectItem itemLabel="Nombre à décimale" itemValue="F" />
+									<f:selectItem itemLabel="Date" itemValue="D" />
+								</p:selectOneMenu>
+								<p:column colspan="2">
+								<p:commandButton value="Ajouter paramétre" actionListener="#{actionCtrl.addParameter}" ajax="true" update="plcscript"/>
+								</p:column>
+							</p:panelGrid>
+						</p:fieldset>
+					</p:fieldset>
+					
+				</p:tab>		
+				<p:tab id="resultaffectation" title="Affectation des résultats">
+					<p:fieldset>
+						<p:panelGrid columns="2" style="width:100%;">
+							<p:outputLabel for="paentity" value="Entité"/>
+							<p:selectOneMenu id="paentity" value="#{actionCtrl.selectedEntity}"  effect="fade" style="width:120px;"  >
+								<p:ajax update="paattributes" event="change" listener="#{actionCtrl.paEntityChanged}" ></p:ajax>
+								<f:selectItems value="#{actionCtrl.entities}" var="entity" itemLabel="#{entity.name}" itemValue="#{entity.dataReference}" ></f:selectItems>
+							</p:selectOneMenu>
+							<p:outputLabel for="patitle" value="Titre"/>
+							<p:inputText id="patitle" value="#{actionCtrl.postAction.postAction}"/>
+							<p:outputLabel for="patype" value="Action"/>
+							<p:selectOneMenu id="patype" value="#{actionCtrl.selectedType}"  effect="fade" style="width:120px;"  >
+								<f:selectItem itemLabel="Nouvel enregistrement" itemValue="1"></f:selectItem>
+								<f:selectItem itemLabel="Mettre à jour" itemValue="2"></f:selectItem>
+							</p:selectOneMenu>
+						</p:panelGrid>
+							<p:dataTable id="paattributes" value="#{actionCtrl.paEntity.attributes}" var="att" editable="true" widgetvar="paattributes"
+								rowKey="#{att.attribute}" selection="#{actionCtrl.target}" selectionMode="single"
+							>
+								<p:ajax event="rowEdit" update="@this" listener="#{actionCtrl.onRowEdit}" />
+								<p:column headerText="Champs">
+									<h:outputText value="#{att.attribute}"/>
+								</p:column>
+								<p:column headerText="Type">
+									<h:outputText value="#{att.typeLabel}"/>
+								</p:column>
+								<p:column headerText="Libelle du paramétre">
+								<p:cellEditor>  
+									<f:facet name="input"><p:inputText value="#{att.dtoValue}"/></f:facet>
+                   					<f:facet name="output"><h:outputText value="#{att.dtoValue}"/></f:facet>
+                				</p:cellEditor>
+								</p:column>
+								<p:column style="width:6%">  
+						            <p:rowEditor />  
+						        </p:column>
+							</p:dataTable>
+						<p:commandButton icon="ui-icon-help" value="Aide sur les paramétres" onclick="parhelp.show();" type="button"></p:commandButton>
+						<p:dialog widgetVar="parhelp"  hideEffect="blur">
+							<h3>Paramètre</h3>
+							<p>Dans le contexte d'un processus métier vous pouvez spécifier des paramétres généraux qui seront utilisés pendant le déroulement de ce denier.</p>
+							<p>Cela signifie que l'application cherchera la valeur de ce champs dans les paramètres existants lors de l'exécution</p>
+							<p>Si l'exécution ne se fait pas dans le cadre d'un processus l'appication demandera la saisie des paramètres</p>
+							<p>Si vous ne voulez pas remplire un champs suite à l'exécution de l'action laissez le champs des paramètres vide</p>
+						</p:dialog>
+					</p:fieldset>
+				</p:tab>
+					
+			</p:wizard>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Les actions aparaissent comme des boutons sur les écrans. Generium détectera directement les arguments en question. Dans le cas où il a besoin de paramétres externes Generium affichera une boite de dialogue pour la saisie de ces paramétres
+		</div>
+		<div class="box">
+		Après la saisie de la formule de calcule, vous devez renseigner l'action de sauvegarde et n'oubliez pas de séléctionner le champs cible du calcul
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

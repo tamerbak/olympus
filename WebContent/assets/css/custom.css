@@ -1,0 +1,20 @@
+.alertRow{
+	color: rgb(230, 16, 16);
+}
+
+.safeRow{
+	color: #26B426;
+}
+.panelClass {
+	border: 0px solid black;
+}
+
+.panelGridClass {
+	width: 100%;
+	border: 0px solid black;
+}
+
+.ui-growl {
+	top: 50px;
+}
+

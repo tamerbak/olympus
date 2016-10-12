@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Conception des procédures
+				<small>Créer une nouvelle procedure</small></h3>
+			</div>
+		</div>	
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="Sauvegarder" actionListener="#{procedureCtrl.save}" icon="ui-icon-disk" oncomplete="procwiz.loadStep(procwiz.cfg.steps [0], true)" update="@form" />
+				<p:menuitem ajax="false" value="Etape suivante" action="proceduresynthesis" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:wizard id="procwiz" widgetVar="procwiz" backLabel="Précédent" nextLabel="Suivant" >
+				<p:tab title="Informations générales">
+				<p:panelGrid columns="2" style="width:100%;">
+					<p:outputLabel for="proctitle" value="Titre"/>
+					<p:inputText id="proctitle" value="#{procedureCtrl.title}"/>
+					<p:outputLabel for="procdescription" value="Description"/>
+					<p:inputTextarea id="procdescription" value="#{procedureCtrl.description}"/>
+					<p:outputLabel for="prockeywords" value="Mots clés"/>
+					<p:inputText id="prockeywords" value="#{procedureCtrl.keywords}"/>
+					<p:tooltip for="prockeywords" value="mot clé 1, mot clé 2, ..."/>
+				</p:panelGrid>
+				</p:tab>
+				<p:tab title="Etapes">
+				<p:panelGrid columns="2" style="width:100%;">
+					<p:outputLabel for="steptitle" value="Titre"/>
+					<p:inputText id="steptitle" value="#{procedureCtrl.stepTitle}"/>
+					<p:outputLabel for="stepdescription" value="Description"/>
+					<p:inputTextarea id="stepdescription" value="#{procedureCtrl.stepDescription}"/>
+					<f:facet name="footer">
+						<p:commandButton value="Ajouter étape" actionListener="#{procedureCtrl.addStep}" update="@form" />
+					</f:facet>
+				</p:panelGrid>
+				<p:dataTable id="steptable" widgetVar="steptable" value="#{procedureCtrl.steps}" var="pstep" emptyMessage="" style="width:100%;" >
+					<f:facet name="header">Etapes</f:facet>
+					<p:column headerText="Titre">
+						#{pstep.title}
+					</p:column>
+					<p:column headerText="Description">
+						#{pstep.description}
+					</p:column>
+				</p:dataTable>
+				</p:tab>
+				<p:tab title="Actions" >
+				<p:panelGrid columns="2" style="width:100%;">
+					<p:outputLabel for="atomtitle" value="Titre"/>
+					<p:inputText id="atomtitle" value="#{procedureCtrl.atomTitle}"/>
+					<p:outputLabel for="atomdescription" value="Description"/>
+					<p:inputTextarea id="atomdescription" value="#{procedureCtrl.atomDescription}"/>
+					<p:outputLabel for="atomstep" value="Etape"/>
+					<p:selectOneMenu id="atomstep" value="#{procedureCtrl.atomStep}" effect="fade" style="width:160px;">
+						<f:selectItems value="#{procedureCtrl.steps}" var="stp" itemLabel="#{stp.title}" itemValue="#{stp.title}"/>
+					</p:selectOneMenu>
+					<p:outputLabel for="atomtype" value="Type"/>
+					<p:selectOneMenu id="atomtype" value="#{procedureCtrl.atomType}" effect="fade" style="width:160px;">
+						<p:ajax event="change" listener="#{entitiesCtrl.entityChangeListener}" update="@form" ></p:ajax>
+						<f:selectItems value="#{procedureCtrl.types}" var="ett" itemLabel="#{ett.type}" itemValue="#{ett.id}"/>
+					</p:selectOneMenu>
+					
+					<p:outputLabel for="atomwindow" value="Fenêtre" rendered="#{procedureCtrl.atomType == 1}"/>
+					<p:selectOneMenu id="atomwindow" value="#{procedureCtrl.atomWindow}"  rendered="#{procedureCtrl.atomType == 1}" effect="fade" style="width:160px;">
+						<f:selectItems value="#{procedureCtrl.windows}" var="ett" itemLabel="#{ett.title}" itemValue="#{ett.title}"/>
+					</p:selectOneMenu>
+					
+					<p:outputLabel for="paramlabel" value="Paramétre" rendered="#{procedureCtrl.atomType == 2}"/>
+					<p:inputText id="paramlabel" value="#{procedureCtrl.parameterLabel}" rendered="#{procedureCtrl.atomType == 2}"/>						
+					<p:outputLabel for="paramtype" value="Type" rendered="#{procedureCtrl.atomType == 2}"/>
+					<p:selectOneMenu id="paramtype" value="#{procedureCtrl.parameterType}"  effect="fade" style="width:160px;"  rendered="#{procedureCtrl.atomType == 2}">
+						<f:selectItem itemLabel="Entier" itemValue="I" />
+						<f:selectItem itemLabel="Nombre à décimale" itemValue="F" />
+						<f:selectItem itemLabel="Date" itemValue="D" />
+					</p:selectOneMenu>
+					
+					<p:outputLabel for="resintitle" value="Titre" rendered="#{procedureCtrl.atomType == 3 or procedureCtrl.atomType == 4}"/>
+					<p:inputText id="resintitle" value="#{procedureCtrl.resinTitle}" rendered="#{procedureCtrl.atomType == 3 or procedureCtrl.atomType == 4}"/>
+					<p:outputLabel for="resindescription" value="Description" rendered="#{procedureCtrl.atomType == 3 or procedureCtrl.atomType == 4}"/>
+					<p:inputTextarea id="resindescription" value="#{procedureCtrl.resinDescription}" rendered="#{procedureCtrl.atomType == 3 or procedureCtrl.atomType == 4}"/>
+					<p:outputLabel for="resinfile" value="Fichier" rendered="#{procedureCtrl.atomType == 3 or procedureCtrl.atomType == 4}"/>
+					<p:inputTextarea id="resinfile" value="#{procedureCtrl.resinFile}" rendered="#{procedureCtrl.atomType == 3 or procedureCtrl.atomType == 4}"/>
+					
+					
+					<p:outputLabel for="comtitle" value="Titre" rendered="#{procedureCtrl.atomType >= 5}"/>
+					<p:inputText id="comtitle" value="#{procedureCtrl.comTitle}" rendered="#{procedureCtrl.atomType >= 5}"/>
+					<p:outputLabel for="comdescription" value="Description" rendered="#{procedureCtrl.atomType >= 5}"/>
+					<p:inputTextarea id="comdescription" value="#{procedureCtrl.comDescription}" rendered="#{procedureCtrl.atomType >= 5}"/>
+					
+				</p:panelGrid>
+				<p:panelGrid columns="1" style="width:100%">
+						<p:commandButton value="Ajouter Resssource" actionListener="#{procedureCtrl.addRes}" update="@form" rendered="#{procedureCtrl.atomType == 3 or procedureCtrl.atomType == 4}" />
+						<p:commandButton value="Ajouter paramétre" actionListener="#{procedureCtrl.addParameter}" update="@form" rendered="#{procedureCtrl.atomType == 2}" />
+						<p:commandButton value="Ajouter action" actionListener="#{procedureCtrl.addAtom}" update="@form" />
+				</p:panelGrid>
+				
+				
+				<!-- Step type = 2 -->
+				<p:dataTable id="paramTable" widgetVar="paramTable" value="#{procedureCtrl.parametersTable}" var="paramet" emptyMessage=""
+					selection="#{procedureCtrl.selectedParameters}" selectionMode="multiple" rowKey="#{paramet.parameterLabel}" rendered="#{procedureCtrl.atomType == 2}"
+				>
+					<p:column headerText="Paramétre">
+						<h:outputText value="#{paramet.parameterLabel}"/>
+					</p:column>
+					<p:column headerText="Type">
+						<h:outputText value="#{paramet.parameterTypeLabel}"/>
+					</p:column>
+				</p:dataTable>
+				
+				<!-- Step type >= 3 -->
+				<p:dataTable id="resinTable" widgetVar="resinTable" value="#{procedureCtrl.resourcesTable}" var="reselt" emptyMessage=""
+					selection="#{procedureCtrl.selectedResource}" rowKey="#{reselt.title}"  selectionMode="single" rendered="#{procedureCtrl.atomType >= 3}"
+				>
+					<p:column headerText="Titre">
+						<h:outputText value="#{reselt.title}"/>
+					</p:column>
+					<p:column headerText="Description">
+						<h:outputText value="#{reselt.description}"/>
+					</p:column>
+				</p:dataTable>
+				
+				<p:dataTable id="atomtable" widgetVar="atomtable" value="#{procedureCtrl.atoms}" var="patom"
+					emptyMessage="" >
+					<f:facet name="header">Actions</f:facet>
+					<p:column headerText="Etape">
+						#{patom.step.title}
+					</p:column>
+					<p:column headerText="Titre">
+						#{patom.title}
+					</p:column>
+					<p:column headerText="Description">
+						#{patom.description}
+					</p:column>
+					<p:column headerText="Type">
+						#{patom.type.type}
+					</p:column>
+					
+				</p:dataTable>
+				</p:tab>
+			</p:wizard>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s7.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez construire un processus de façon graphique 
+		</div>
+		<br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.processes}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

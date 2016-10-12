@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Synthèse
+				<small>Confirmation de la création de l'application</small></h3>
+			</div>
+		</div>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="Créer" actionListener="#{synthesisCtrl.createApplication}" onclick="prgbrr.show();"  icon="ui-icon-seek-end" update="progress" ajax="true" />
+			</p:menubar>
+			    <p:dialog widgetVar="prgbrr" draggable="false" header="Progression" modal="false" width="200">
+			    	<p:progressBar id="progress" interval="100"  ajax="true" value="#{synthesisCtrl.progressMonitor}" widgetVar="pbAjax" style="width:100%; font-size:12px"/>
+				</p:dialog>
+				<p:fieldset legend="Paramétres fondamentaux" widgetVar="fondamentalSettings" >
+					
+					<p:panelGrid columns="2" cellpadding="10" style="width:100%;">
+						<p:outputLabel for="applogo" value="Logo"/>
+        				<p:graphicImage id="applogo" value="#{synthesisCtrl.applogo}" />  
+						<p:outputLabel for="appname" value="Titre"/>
+						<h:outputText id="appname" value="#{synthesisCtrl.appname}"/>
+						<p:outputLabel for="appversion" value="Version"/>
+						<h:outputText id="appversion" value="#{synthesisCtrl.appversion}"/>
+						<p:outputLabel for="appdescription" value="Description"/>
+						<p:inputTextarea disabled="true" id="appdescription" value="#{synthesisCtrl.appdescription}" />
+					</p:panelGrid>
+					<p:dataGrid var="ent" value="#{synthesisCtrl.entities}" columns="3"  
+       				 rows="12" paginator="true"  emptyMessage=""
+     				 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        			 rowsPerPageTemplate="9,12,15">
+        			 	<f:facet name="header">Entités</f:facet>
+        			 	<p:panel header="#{ent.name}" >
+        			 		<p:dataTable value="#{ent.attributes}" var="att" emptyMessage="">
+								<p:column>
+									<f:facet name="header">Champs</f:facet>
+									<h:outputText value="#{att.attribute}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">Type</f:facet>
+									<h:outputText value="#{att.typeLabel}" />
+								</p:column>
+							</p:dataTable>
+        			 	</p:panel>
+					</p:dataGrid>
+				</p:fieldset>
+				<p:fieldset legend="Ecrans" widgetVar="screens" >
+					<p:dataGrid value="#{synthesisCtrl.screens}" var="scr" columns="3"  
+       				 rows="12" paginator="true"  emptyMessage=""
+     				 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        			 rowsPerPageTemplate="9,12,15">
+        				<f:facet name="header">Ecrans</f:facet>
+        				<p:panel header="#{scr.title}" >
+        					<p:dataList value="#{scr.CActionbuttons}" var="abtn" itemType="disc">
+								<f:facet name="header">Actions</f:facet>
+								#{abtn.title}
+							</p:dataList>
+							<p:dataList value="#{scr.CDocumentbuttons}" var="dbtn" itemType="disc" >
+								<f:facet name="header">Documents</f:facet>
+								#{dbtn.title}
+							</p:dataList>
+        				</p:panel>
+        			</p:dataGrid>
+				</p:fieldset>
+				<p:fieldset legend="Processus" widgetVar="processes" >
+					<p:dataList value="#{synthesisCtrl.processes}" var="proc" itemType="disc" >
+					#{proc.title}
+					</p:dataList>
+				</p:fieldset>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Veuillez vérifier la configuration de votre application avant de lancer la construction
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

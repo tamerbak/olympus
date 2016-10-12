@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Appels de fonctions
+				<small>Liste des fonctions associées aux fenêtres</small></h3>
+			</div>
+		</div>
+			
+		<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="Enregistrer" action="#{calloutCtrl.saveWindowCallout}" icon="ui-icon-disk" />
+				<p:menuitem ajax="false" value="Terminer" action="callout-windows" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:panelGrid columns="2" style="width:100%" >
+				<p:outputLabel for="selwindow" value="Fenêtre" />
+				<p:selectOneMenu id="selwindow" value="#{calloutCtrl.selectedWindowId}" >
+					<p:ajax event="change" listener="#{calloutCtrl.selectedWindowChange}" update="@form"/>
+					<f:selectItems value="#{calloutCtrl.windows}" var="win" 
+						itemLabel="#{win.title}" itemValue="#{win.id}" />
+				</p:selectOneMenu>
+				<p:outputLabel for="selcallout" value="Fonction" />
+				<p:selectOneMenu id="selcallout" value="#{calloutCtrl.selectedCalloutId}" >
+					<p:ajax event="change" listener="#{calloutCtrl.selectedCalloutChange}" update="@form"/>
+					<f:selectItems value="#{calloutCtrl.callouts}" var="c" 
+						itemLabel="#{c.nom}" itemValue="#{c.id}" />
+				</p:selectOneMenu>
+			</p:panelGrid> 
+			
+			<p:dataTable value="#{calloutCtrl.arguments}" var="a" emptyMessage="" >
+				<p:column headerText="Argument" >
+					<h:outputText value="#{a.libelle}" />
+				</p:column>
+				<p:column headerText="Valeur" >
+					<p:selectOneMenu value="#{a.value}" >
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItem itemLabel="Dialogue" itemValue="prompt" />
+						<f:selectItems value="#{calloutCtrl.attributes}" var="att"
+							itemLabel="#{att.attribute}" itemValue="#{att.dataReference}" />
+					</p:selectOneMenu>
+				</p:column>
+			</p:dataTable>
+			
+		</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	
+	</ui:define>
+</ui:composition>
+</html>

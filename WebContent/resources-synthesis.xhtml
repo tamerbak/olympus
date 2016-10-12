@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Ressources de l'application
+				<small>Liste des ressources binaires</small></h3>
+			</div>
+		</div>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="Nouveau" action="newresource" icon="ui-icon-document" />
+			</p:menubar>
+			
+			<p:dataGrid var="scr" value="#{gresourcesCtrl.resources}" columns="3"  id="gridscreens" widgetVar="gridscreens"
+        rows="4" paginator="true"  emptyMessage=""
+        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        rowsPerPageTemplate="9,12,15">
+        		<p:panel header="#{scr.name}" style="text-align:center">  
+	        		<p:confirmDialog id="dependencies" message="êtes vous sûr de vouloir supprimer cette ressource ?"  
+		                header="Suppression d'une ressource" severity="alert" widgetVar="dependencies">
+		                <h3>Suppression d'une fonction</h3>
+						<p><b>Attention ! </b>&nbsp; Generium procédera à la suppression de""#{gresourcesCtrl.toDelete.name}"  </p>
+						<p>Voulez vous continuer ?</p>
+						<p:commandButton value="Supprimer" actionListener="#{gresourcesCtrl.doDelete}" update="@form" oncomplete="PF('dependencies').hide()" />&nbsp;&nbsp;
+						<p:commandButton value="Annuler" type="button" onclick="PF('dependencies').hide()" /> 
+					</p:confirmDialog>
+  		        	<center>
+						<p:graphicImage value="img/callout.png" />   
+     		        	<br/>
+     		        	<h:outputText value="#{scr.name}" />
+     		        	<br/>
+						<p:commandButton icon="ui-icon-trash" styleClass="ui-icon-white" 
+							type="button" oncomplete="PF('dependencies').show()">
+							<f:setPropertyActionListener value="#{scr}"   
+                            	target="#{gresourcesCtrl.toDelete}"  />
+						</p:commandButton>
+                	</center>
+        		</p:panel>
+        	
+        	</p:dataGrid>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	
+	</ui:define>
+</ui:composition>
+</html>

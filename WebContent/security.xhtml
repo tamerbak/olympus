@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="top-bar">
+				<h1>Définition des profils</h1>
+			</div><br />
+			<div class="select-bar">
+		    	<div class="breadcrumbs">Création des rôles et définition des politiques de sécurité de l'application </div>
+			</div>
+			
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="Sauvegarder" actionListener="#{rolesCtrl.saveRole}" icon="ui-icon-disk" update="@form" />
+				<p:menuitem ajax="false" value="Etape suivante" action="rolesynthesis" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:fieldset legend="Nouvel élément">
+				<p:panelGrid columns="2" style="width:100%;">
+					<p:outputLabel for="roletitle" value="Titre" />
+					<p:inputText id="roletitle" value="#{rolesCtrl.roleTitle}" />
+					<p:outputLabel for="screenlist" value="Ecrans" />
+					<p:selectCheckboxMenu id="screenlist" label="Ecrans" value="#{rolesCtrl.selectedScreens}" filter="true" filterText="Filter" filterMatchMode="contains" panelStyle="width:370px" >
+						<f:selectItems value="#{rolesCtrl.screens}" />
+					</p:selectCheckboxMenu>
+					<p:outputLabel for="userbound" value="Lié à une entité" />
+					<p:selectOneMenu id="userbound" value="#{rolesCtrl.entityId}" filter="true" filterMatchMode="contains" >
+						<f:selectItem itemLabel="Non lié" itemValue="0"/>
+						<f:selectItems value="#{rolesCtrl.entities}" var="rle" itemLabel="#{rle.name}" itemValue="#{rle.id}" />
+					</p:selectOneMenu>
+					<p:outputLabel for="optlist" value="Fonctions optionnelles" />
+					<p:selectCheckboxMenu id="optlist" label="Fonctions optionnelles" value="#{rolesCtrl.superMenus}" filter="true" filterText="Filter" filterMatchMode="contains" panelStyle="width:370px" >
+						<f:selectItems value="#{rolesCtrl.menus}" />
+					</p:selectCheckboxMenu>
+					<p:outputLabel for="isadmin" value="Administrateur" />
+					<p:selectBooleanCheckbox id="isadmin" value="#{rolesCtrl.superAdmin}" />  
+					<p:outputLabel for="vision" value="Vision" />
+					<p:selectOneMenu id="vision" value="#{rolesCtrl.vision}" >
+						<f:selectItem itemLabel="Dirigeant" itemValue="F"/>
+						<f:selectItem itemLabel="Expert comptable" itemValue="L"/>
+					</p:selectOneMenu>
+					<p:outputLabel for="rdescription" value="Description"/>
+					<p:inputTextarea id="rdescription" value="#{rolesCtrl.roleDescription}" autoResize="false" />
+					
+					<p:outputLabel for="logo" value="Logo"/>
+					<p:fileUpload id="logo" fileUploadListener="#{rolesCtrl.handleFileUpload}"  
+			            mode="advanced"
+					    multiple="false"
+			            sizeLimit="1000000"   
+			            cancelLabel="#{msg['application.btn.cancel']}"
+			            label="#{msg['application.btn.run.through']}"
+			            uploadLabel="#{msg['application.btn.upload']}"
+			            allowTypes="/(\.|\/)(gif|jpe?g|png)$/"/>
+				</p:panelGrid>
+				<p:tabView id="tabView"  >
+						
+						<p:tab id="documents" title="Documents">
+							<p:selectManyCheckbox value="#{rolesCtrl.selectedDocuments}" layout="pageDirection">
+								<f:selectItems value="#{rolesCtrl.documents}"  />
+							</p:selectManyCheckbox>
+						</p:tab>
+						<p:tab id="actions" title="Actions">
+							<p:selectManyCheckbox value="#{rolesCtrl.selectedActions}" layout="pageDirection">
+								<f:selectItems value="#{rolesCtrl.actions}"  />
+							</p:selectManyCheckbox>
+						</p:tab>
+						<p:tab id="processes" title="Processus">
+							<p:selectManyCheckbox value="#{rolesCtrl.selectedProcesses}" layout="pageDirection">
+								<f:selectItems value="#{rolesCtrl.processes}"  />
+							</p:selectManyCheckbox>
+						</p:tab>
+					</p:tabView>   
+			</p:fieldset>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s9.png" />
+		</p:notificationBar>
+		<p:dialog header="Description" id="elementdialog" widgetVar="elementdialog">
+				<p:outputLabel value="#{preanalyseCtrl.descriptionToShow}"/>
+			</p:dialog>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez créer un écran <br />
+		La première étape consiste à déterminer certains paramétres de l'écran comme son type et sa description. 
+		</div>
+		<div class="box">
+		La seconde étape consiste en l'affectation des champs visibles sur l'écran. En notant une entitée comme référence elle ne sera pa modifiable s'il s'agit d'un formulaire, 
+		par contre elle s'affichera sous forme d'une liste déroulante 
+		</div>
+		<br /><br />
+		<strong class="h">Rappels</strong>
+		<div class="box">
+			<p:dataList value="#{preanalyseCtrl.roles}" var="pelement">
+				<p:commandLink update="@form" oncomplete="elementdialog.show()" title="#{pelement.title}">  
+					<h:outputText value="#{pelement.title}" />
+					<f:setPropertyActionListener value="#{pelement.description}" target="#{preanalyseCtrl.descriptionToShow}" />  
+				</p:commandLink>
+				
+			</p:dataList>
+			
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+		
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

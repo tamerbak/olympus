@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>GenClass Diagram</title>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" href="assets/plugins/diagram/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="assets/plugins/diagram/css/diagram_o.css"/>
+</h:head>
+<h:body>
+	<f:view>
+	<div id="pal_prop">
+		<div id="palette" >
+			<ul>
+				<li><a href="#" id="dg-class" class="btn btn-palette input-sm">Entité</a></li>
+				<li>
+					<a href="#" id="dg-association" class="btn btn-palette input-sm">Association</a>
+					<div id="class-assoc" style="display:none">
+						<select id="slct1" class="form-control input-sm">
+						</select>
+						<select id="slct2" class="form-control input-sm"></select>
+						<button id="set-assoc" class="btn btn-palette-action input-sm" >Créer</button>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div id="properties">
+			<input type="hidden" name="key" value="" />
+			<input type="hidden" name="id" id="attrId" value="" />
+			<div class="head">
+					<label for="">Propriété</label>
+					<div class="control"><label for="">Valeur</label></div>
+				</div>	
+			<div class="prop class_name association attribute">
+				<label>Nom</label>
+				<div class="control attriubte"><input type="text" value="" name="name" class="prop-name form-control" /></div>
+			</div>
+			<div class="prop attribute">
+				<label>Type</label>
+				<div class="control attriubte">
+					<select name="type" id="" class="prop-type form-control input-sm">
+						<!-- <option value=""></option> -->
+						<option value="Nombre" selected="selected">Nombre</option>
+						<option value="Text">Text</option>
+						<option value="Fichier">Fichier</option>
+						<option value="Utilisateur">Utilisateur</option>
+						<option value="Date">Date</option>
+						<option value="Heure">Heure</option>
+						<option value="Monetaire">Monétaire</option>
+						<option value="Verroux">Verroux</option>
+					</select>
+				</div>
+			</div>
+			<div class="prop attribute association">
+				<label title="Key field">Identificateur</label>
+				<div class="control attriubte">
+					<input type="checkbox" value="true" name="key_field" class="prop-key_field" />
+				</div>
+			</div>
+			<div class="prop attribute ">
+				<label title="Auto Value">Valeur Auto.</label>
+				<div class="control attriubte">
+					<input type="checkbox" value="true" name="auto_value" class="prop-auto_value" />
+				</div>
+			</div>
+			<!-- <div class="prop attribute">
+				<label title="Key reference">Identificateur</label>
+				<div class="control attriubte">
+					<input type="checkbox" value="true" name="key_reference" class="prop-key_reference" />
+				</div>
+			</div> -->
+			<div class="prop attribute association">
+				<label>Obligatoire</label>
+				<div class="control attriubte"><input type="checkbox" value="" name="mandatory" class="prop-mandatory" /></div>
+			</div>
+			<div class="prop attribute">
+				<label>Calculé</label>
+				<div class="control attriubte">
+					<input type="checkbox" value="true" name="is_calculated" class="prop-is_calculated validator" data-valid="#formula" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label>Formule</label>
+				<div class="control attriubte">
+					<textarea name="formula" class="prop-formula form-control" id="formula" rows="3"></textarea>
+				</div>
+			</div>
+			<div class="prop association">
+				<label>Référence</label>
+				<div class="control attriubte">
+					<input type="radio" name="assoc_type" value="reference" class="prop-reference" />
+				</div>
+			</div>
+			<div class="prop association">
+				<label>Multiple</label>
+				<div class="control attriubte">
+					<input type="radio" name="assoc_type" value="multiple" class="prop-multiple" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label title="Requires validation">Validable</label>
+				<div class="control attriubte">
+					<input type="checkbox" value="true" name="requires_validation" class="prop-requires_validation validator" data-valid="#validation_formula" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label title="Validation Formula">Formule</label>
+				<div class="control attriubte">
+					<textarea name="validation_formula" id="validation_formula" class="prop-validation_formula form-control" rows="3"></textarea>
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label>Nom</label>
+				<div class="control attriubte">
+					<input type="text" value="" name="file_title" class="prop-file_title Fichier controlled form-control" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label>Extension</label>
+				<div class="control attriubte">
+					<input type="text" value="" name="file_extension" class="prop-file_extension Fichier controlled form-control" />
+				</div>
+			</div>
+			<div class="prop attribute association">
+				<label>Val. Défaut</label>
+				<div class="control attriubte">
+					<input type="text" value="" name="default_value" class="prop-default_value form-control" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label title="Conditional layout">Affichage conditionnel</label>
+				<div class="control attriubte">
+					<input type="checkbox" value="true" name="conditional_layout" class="prop-conditional_layout validator" data-valid="#conditional_layout_formula" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label title="Conditional layout Formula">Formule</label>
+				<div class="control attriubte">
+					<textarea name="conditional_layout_formula" id="conditional_layout_formula" class="prop-conditional_layout_formula form-control" rows="3"></textarea>
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label>Lib. Verrouillage</label>
+				<div class="control attriubte">
+					<input type="text" value="" name="unlock_label" class="prop-unlock_label Verroux controlled form-control" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label>Lib. Déverrouillage</label>
+				<div class="control attriubte">
+					<input type="text" value="" name="lock_label" class="prop-lock_label Verroux controlled form-control" />
+				</div>
+			</div>
+			<div class="prop attribute">
+				<label>Unique</label>
+				<div class="control attriubte">
+					<input type="checkbox" value="true" name="unicity" class="prop-unicity" />
+				</div>
+			</div>
+			<div id="save-prop-div attribute">
+				<div class="action attriubte"><button id="save-prop" class="btn btn-palette-action" >Valider</button></div>
+			</div>
+		</div>
+		<div id="submit-form-div">
+			<form id="form-diagram" action="entities.xhtml" method="post">
+				<button id="dg-submit-btn" class="btn btn-palette-action" >Valider le diagramme</button>
+			</form>
+		</div>
+	</div>
+	<div id="canvas"></div>
+	<div id="diagram_div" style="background-color:cyan;display:none;">
+	#{entitiesCtrl.jsonDiagram}
+	</div>
+	<script type="text/javascript" src="assets/plugins/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="assets/plugins/diagram/js/raphael.js"></script>
+	<script type="text/javascript" src="assets/plugins/diagram/js/diagram.js"></script>
+    
+    <script type="text/javascript">
+	//<![CDATA[
+	var paper = Raphael("canvas");
+    paper.setViewBox(0,0,paper.width,paper.height);
+    //var c = paper.rect(0,0,50,50).attr({'fill':'#e0e0e0'});
+    //c.translate((paper.width / 2) - (c.attr('width') / 2), (paper.height / 2) - (c.attr('height') / 2));
+
+	var viewBoxWidth = paper.width;
+	var viewBoxHeight = paper.height;
+	var canvasID = "#canvas";
+	var startX,startY;
+	var mousedown = false;
+	var dX,dY;
+	var oX = 0, oY = 0, oWidth = viewBoxWidth, oHeight = viewBoxHeight;
+	var viewBox = paper.setViewBox(oX, oY, viewBoxWidth, viewBoxHeight);
+	viewBox.X = oX;
+	viewBox.Y = oY;
+	//var vB = paper.rect(viewBox.X,viewBox.Y,viewBoxWidth,viewBoxHeight)
+	//    .attr({stroke: "#009", "stroke-width": 1});;
+
+	    /** This is high-level function.
+	     * It must react to delta being more/less than zero.
+	     */
+	function handleMovement(delta) {
+	        vBHo = viewBoxHeight;
+	        vBWo = viewBoxWidth;
+	        if (delta < 0) {
+	        viewBoxWidth *= 0.95;
+	        viewBoxHeight*= 0.95;
+	        }
+	        else {
+	        viewBoxWidth *= 1.05;
+	        viewBoxHeight *= 1.05;
+	        }
+			/*
+			        vB.attr({
+			          x: viewBox.X,
+			          y: viewBox.Y,
+			          width: viewBoxWidth,
+			          height: viewBoxHeight
+			        });
+			 */
+			                        
+			  viewBox.X -= (viewBoxWidth - vBWo) / 2;
+			  viewBox.Y -= (viewBoxHeight - vBHo) / 2;          
+			  paper.setViewBox(viewBox.X,viewBox.Y,viewBoxWidth,viewBoxHeight);
+	    }
+
+	    /** Event handler for mouse wheel event.
+	     */
+	    function wheel(event){
+	            var delta = 0;
+	            if (!event) /* For IE. */
+	                    event = window.event;
+	            if (event.wheelDelta) { /* IE/Opera. */
+	                    delta = event.wheelDelta/120;
+	            } else if (event.detail) { /** Mozilla case. */
+	                    /** In Mozilla, sign of delta is different than in IE.
+	                     * Also, delta is multiple of 3.
+	                     */
+	                    delta = -event.detail/3;
+	            }
+	            /** If delta is nonzero, handle it.
+	             * Basically, delta is now positive if wheel was scrolled up,
+	             * and negative, if wheel was scrolled down.
+	             */
+	            if (delta)
+	            	handleMovement(delta);
+	            /** Prevent default actions caused by mouse wheel.
+	             */
+	            if (event.preventDefault)
+	                    event.preventDefault();
+	        event.returnValue = false;
+	    }
+	    
+	    
+	$(document).ready(function(){
+	
+		dgClasses = JSON.parse($("#diagram_div").text());
+		drawGraph();
+		
+		$("#dg-submit-btn").click(function(){ 
+			try {
+				
+				var obj = dgClassestoString( dgClasses);
+				$('<input />').attr('type', 'hidden')
+		        .attr('name', 'diagram')
+		        .attr('value',  obj)
+		        .appendTo('#form-diagram');
+				
+				$('<input />').attr('type', 'hidden')
+				.attr('style',"display:none")
+		        .attr('name', "source")
+		        .attr('value', "fromDC")
+		        .appendTo('#form-diagram');
+				
+				$("#form-diagram").submit();
+			} catch(err) {
+			   	console.log(err);
+				return false;
+			}
+			
+			
+		});
+		
+		/** Initialization code. 
+	     */
+	    if (window.addEventListener)
+	            /** DOMMouseScroll is for mozilla. */
+	            window.addEventListener('DOMMouseScroll', wheel, false);
+	    /** IE/Opera. */
+	    window.onmousewheel = document.onmousewheel = wheel;
+
+	//Pane
+	        $(canvasID).mousedown(function(e){
+	            
+	            if (paper.getElementByPoint( e.pageX, e.pageY ) != null) {return;}
+	            mousedown = true;
+	            startX = e.pageX; 
+	            startY = e.pageY;    
+	        });
+
+	        $(canvasID).mousemove(function(e){
+	            if (mousedown == false) {return;}
+	            dX = startX - e.pageX;
+	            dY = startY - e.pageY;
+	            x = viewBoxWidth / paper.width; 
+	            y = viewBoxHeight / paper.height; 
+
+	            dX *= x; 
+	            dY *= y; 
+	            //alert(viewBoxWidth +" "+ paper.width );
+	            
+	            paper.setViewBox(viewBox.X + dX, viewBox.Y + dY, viewBoxWidth, viewBoxHeight);
+
+	        })
+	            
+	        $(canvasID).mouseup(function(e){
+	            if ( mousedown == false ) return; 
+	            viewBox.X += dX; 
+	            viewBox.Y += dY; 
+	            mousedown = false; 
+	            
+	        });
+	});
+	
+    
+
+	//]]>
+	</script>
+	
+	</f:view>
+</h:body>
+	
+</html>

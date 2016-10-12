@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<!-- BEGIN HEAD -->
+<h:head>
+	<meta charset="utf-8" />
+	<title>Metronic | Login Options - Login Form 2</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<!-- BEGIN GLOBAL MANDATORY STYLES -->
+	<link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/plugins/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/style-metro.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/style-responsive.css" rel="stylesheet" type="text/css"/>
+	<link href="assets/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color"/>
+	<link href="assets/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="assets/plugins/select2/select2_metro.css" />
+	<!-- END GLOBAL MANDATORY STYLES -->
+	<!-- BEGIN PAGE LEVEL STYLES -->
+	<link href="assets/css/pages/login-soft.css" rel="stylesheet" type="text/css"/>
+	<!-- END PAGE LEVEL STYLES -->
+	<link rel="shortcut icon" href="favicon.ico" />
+	<style>
+	.ui-button{}
+	.ui-widget{}
+	.ui-state-default{}
+	.ui-corner-all{}
+	.ui-button-text-icon-left{} 
+	.ui-button .ui-button-text{
+		display: inline;
+	}
+	</style>
+</h:head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<h:body class="login">
+  <f:view>
+	<!-- BEGIN LOGO -->
+	<div class="logo">
+		<img src="img/logo-generium.320x72.png" alt="" /> 
+	</div>
+	<!-- END LOGO -->
+	<!-- BEGIN LOGIN -->
+	<div class="content">
+		<!-- BEGIN LOGIN FORM -->
+		<h:form class="form-vertical login-form">
+			<h3 class="form-title">#{msg['login.form.title']}</h3>
+			<div class="alert alert-error hide">
+				<button class="close" data-dismiss="alert"></button>
+				<span>#{msg['login.form.error']}</span>
+			</div>
+			<div class="control-group">
+				<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+				<label class="control-label visible-ie8 visible-ie9">#{msg['login.form.username']}</label>
+				<div class="controls">
+					<div class="input-icon left">
+						<i class="icon-user"></i>
+<!-- 						<input class="m-wrap placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username"/> -->
+						<h:inputText id="user_name" value="#{loginCtrl.userName}" required="true" class="m-wrap placeholder-no-fix" />
+						<p:watermark value="#{msg['login.form.username']}" for="user_name"></p:watermark>
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label visible-ie8 visible-ie9">#{msg['login.form.password']}</label>
+				<div class="controls">
+					<div class="input-icon left">
+						<i class="icon-lock"></i>
+<!-- 						<input class="m-wrap placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password"/> -->
+						<h:inputSecret id="password" value="#{loginCtrl.password}" required="true" class="m-wrap placeholder-no-fix"/>
+						<p:watermark value="#{msg['login.form.password']}" for="password"></p:watermark>
+					
+					</div>
+				</div>
+			</div>
+			<div class="form-actions">
+<!-- 				<button type="submit" class="btn blue pull-right"> -->
+<!-- 				Login <i class="m-icon-swapright m-icon-white"></i> -->
+<!-- 				</button>     -->
+				<p:commandButton action="#{loginCtrl.goLogin}" value="#{msg['login.form.authentifier']}" ajax="false"  styleClass="submit-btn btn blue pull-right">
+				</p:commandButton>
+				<script >
+					$(document).ready(){
+						$(".submit-btn ").unbind("hover");
+					}
+				</script>
+			</div>
+		</h:form>
+		<!-- END LOGIN FORM -->        
+	</div>	
+	<!-- END LOGIN -->
+	<!-- BEGIN COPYRIGHT -->
+	<div class="copyright">
+		2014 &copy; GAM Entreprise
+	</div>
+	<!-- END COPYRIGHT -->
+	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+	<!-- BEGIN CORE PLUGINS -->   <script src="assets/plugins/jquery-1.10.1.min.js" type="text/javascript"></script>
+	<script src="assets/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+	<!-- IMPORTANT! Load jquery-ui-1.10.1.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+	<script src="assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>      
+	<script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js" type="text/javascript" ></script>
+	<!--[if lt IE 9]>
+	<script src="assets/plugins/excanvas.min.js"></script>
+	<script src="assets/plugins/respond.min.js"></script>  
+	<![endif]-->   
+	<script src="assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+	<script src="assets/plugins/jquery.blockui.min.js" type="text/javascript"></script>  
+	<script src="assets/plugins/jquery.cookie.min.js" type="text/javascript"></script>
+	<script src="assets/plugins/uniform/jquery.uniform.min.js" type="text/javascript" ></script>
+	<!-- END CORE PLUGINS -->
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script src="assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script>
+	<script src="assets/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="assets/plugins/select2/select2.min.js"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="assets/scripts/app.js" type="text/javascript"></script>
+	<script src="assets/scripts/login-soft.js" type="text/javascript"></script>      
+	<!-- END PAGE LEVEL SCRIPTS --> 
+	<script>
+		jQuery(document).ready(function() {     
+		  App.init();
+		  Login.init();
+		});
+	</script>
+	<!-- END JAVASCRIPTS -->
+  </f:view>	
+</h:body>
+<!-- END BODY -->
+</html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+
+	<title>WorkFlow Diagram</title>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" href="assets/plugins/diagram/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="assets/plugins/diagram/css/diagram.css" />
+</h:head>
+<h:body>
+	<div id="palette" >
+		<ul>
+			<li><a href="#" id="dg-nodes" class="title" >Processus métier</a>
+				<div>
+					<div id="submit">
+						<form id="form-wf-diagram" action="wf.xhtml" method="post">
+							<div class="form-group">
+								<label for="wf_title" class="control-label col-sm-3">Titre</label>
+								<div class="col-sm-9">
+									<input type="text" name="wf_title" id="wf_title" class="form-control input-sm" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="control-label col-sm-3">Ecran</label>
+								<div class="col-sm-9">
+									<select name="wf_windows" class="form-control input-sm">
+										<option value=""></option>
+										<ui:repeat var="w" value="#{diagramEditor.windows}" varStatus="status">
+										    <option value="#{w.id}">#{w.title}</option>
+										</ui:repeat>
+									</select>
+								</div>
+							</div>
+							<button id="dg-submit-btn" class="btn btn-palette-action" >Enregistrer</button>
+							
+						</form>
+					</div>
+				</div>
+			</li>
+			<li><a href="#" id="dg-nodes" class="title" >Noeuds</a>
+				<div>
+					
+					<div class="form-horizontal">
+						<input id="node_key" type="hidden" />
+						<div class="form-group">
+							<label for="" class="control-label col-sm-3">Title</label>
+							<div class="col-sm-9">
+								<input type="text" name="title" id="node_title" class="form-control input-sm" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="control-label col-sm-3">Message</label>
+							<div class="col-sm-9">
+								<textarea name="message" id="node_message" cols="30" rows="4" class="form-control input-sm"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="control-label col-sm-3">Windows</label>
+							<div class="col-sm-9">
+								<select name="windows" class="form-control input-sm">
+									<option value=""></option>
+									<ui:repeat var="w" value="#{diagramEditor.windows}" varStatus="status">
+									    <option value="#{w.id}">#{w.title}</option>
+									</ui:repeat>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="control-label col-sm-3">Roles</label>
+							<div class="col-sm-9">
+								<select name="roles" class="form-control input-sm">
+									<ui:repeat var="r" value="#{diagramEditor.roles}" varStatus="status">
+									    <option value="#{r.id}">#{r.role}</option>
+									</ui:repeat>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="node_action">
+						<ul class="create">
+							<li><a href="#" class="add-node btn btn-request" data-type="request" data-type_id="20">Requête</a></li>
+							<li><a href="#" class="add-node btn btn-infos" data-type="infos" data-type_id="23">Info</a></li>
+							<li><a href="#" class="add-node btn btn-screen" data-type="screen" data-type_id="22">Ecran</a></li>
+							<li><a href="#" class="add-node btn btn-answer" data-type="answer" data-type_id="21">Réponse</a></li>
+							<li><a href="#" class="add-node btn btn-choice" data-type="choice" data-type_id="24">Choix</a></li>
+						</ul>
+						<div class="save" style="display:none">
+							<button id="save-node" class="btn btn-primary" >Enregistrer</button>
+							<button id="delete-node" class="btn btn-primary" >Supprimer</button>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li >
+				<a href="#" id="dg-transition" class="title" >Transition</a>
+				<div id="class-assoc" class="form-horizontal" >
+					<input type="hidden" id="trans_key" />
+					<div class="form-group">
+						<label for="" class="control-label col-sm-3">Titre</label>
+						<div class="col-sm-9">
+							<input type="text" name="title" id="trans_title" class="form-control input-sm" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="control-label col-sm-3">Auto</label>
+						<div class="col-sm-9">
+							<input type="checkbox" name="auto" id="trans_auto" class="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="control-label col-sm-3">Confirmation</label>
+						<div class="col-sm-9">
+							<input type="radio" name="yes_no" id="trans_yes" class="" value="yes"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="control-label col-sm-3">Annulation</label>
+						<div class="col-sm-9">
+							<input type="radio" name="yes_no" id="trans_no" class="" value="no"/>
+						</div>
+					</div>
+					<div id="div-slct1" class="form-group">
+						<label for="" class="control-label col-sm-3">De</label>
+						<div class="col-sm-9">
+							<select id="slct1" class="form-control input-sm">
+							</select>
+						</div>
+					</div>
+					<div id="div-slct2" class="form-group">
+						<label for="" class="control-label col-sm-3">Vers</label>
+						<div class="col-sm-9">
+							<select id="slct2" class="form-control input-sm"></select>
+						</div>
+					</div>
+					<div class="transition_action">
+						<button id="add-transition" class="btn btn-primary" >Créer</button>
+						<button id="update-transition" class="btn btn-primary" style="display:none">Modifier</button>
+						<button id="delete-transition" class="btn btn-primary" style="display:none">Supprimer</button>
+
+					</div>
+				</div>
+			</li>
+		</ul>
+		<div id="wf_diagram_div">
+		</div>
+		
+	</div>
+	<div id="canvas"></div>
+
+	<!-- ============================== scripts ============================== -->
+	<script type="text/javascript" src="assets/plugins/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="assets/plugins/diagram/js/raphael.js"></script>
+	<script type="text/javascript" src="assets/plugins/diagram/js/diagram.js"></script>
+	<script type="text/javascript" src="assets/plugins/diagram/js/wf.js"></script>
+	<script>
+	$(document).ready(function(){
+// 		dgWF = JSON.parse($("#wf_diagram_div").text());
+// 		drawWFGraph();
+	
+		
+	});
+	</script>
+</h:body>
+</html>

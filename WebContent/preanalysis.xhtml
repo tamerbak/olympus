@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+			<div class="row-fluid">
+				<div class="col-md-12">
+					<h3 class="page-title">Pré-analyse
+					<small>Enumération des différents composants potentiels de l'application</small>
+					</h3>
+				</div>
+			</div>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="Suivant" action="#{preanalyseCtrl.next}" icon="ui-icon-seek-end" />
+			</p:menubar>
+			    
+				<p:fieldset legend="Pré-analyse" widgetVar="analysisfieldset" id="analysisfieldset" >
+					<p:panelGrid columns="2" cellpadding="10" style="width:100%;" >
+						<f:facet name="header">
+							Application
+						</f:facet>
+						<p:outputLabel for="applicatiotitle" value="Application" />
+						<p:inputText id="applicatiotitle" value="#{preanalyseCtrl.applicationTitle}"/>
+					</p:panelGrid>
+					
+					<p:panel header="Rubrique fonctionnelle" toggleable="true">
+						<p:panelGrid columns="2" cellpadding="10" style="width:100%;" >
+							<p:outputLabel for="functionTitle" value="Rubrique fonctionnelle" />
+							<p:inputText id="functionTitle" value="#{preanalyseCtrl.functionTitle}"/>
+							<p:outputLabel for="functionDescription" value="Desciption" />
+							<p:inputTextarea id="functionDescription" value="#{preanalyseCtrl.functionDescription}"/>
+							<p:commandButton id="funcbtn" widgetVar="funcbtn" value="Ajouter rubrique" ajax="true" actionListener="#{preanalyseCtrl.addFunctionTitle}" update="@form"  />
+						</p:panelGrid>
+						<p:dataTable emptyMessage="" id="functionTable" widgetVar="functionTable" value="#{preanalyseCtrl.functions}" var="pelement">
+							<p:column headerText="Titre">
+								#{pelement.title}
+							</p:column>
+							<p:column headerText="Description">
+								#{pelement.description}
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+					
+					<p:panel header="Dictionnaire des données" toggleable="true">
+						<p:panelGrid columns="2" cellpadding="10" style="width:100%;">
+							<p:outputLabel for="entitytitle" value="Entité"/>
+							<p:inputText id="entitytitle" value="#{preanalyseCtrl.entityTitle}"/>
+							<p:outputLabel for="entitydescription" value="Description"/>
+							<p:inputTextarea id="entitydescription" value="#{preanalyseCtrl.entityDescription}"/>
+							<p:commandButton id="entbtn" widgetVar="entbtn" ajax="true" value="Ajouter entité" actionListener="#{preanalyseCtrl.addEntity}" update="@form"/>
+						</p:panelGrid>
+						<p:dataTable emptyMessage="" id="entityTable" widgetVar="entityTable" value="#{preanalyseCtrl.entities}" var ="ent">
+						<p:column headerText="Titre">
+								#{ent.title}
+							</p:column>
+							<p:column headerText="Description">
+								#{ent.description}
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+					<p:panel header="Ecrans de l'application" toggleable="true">
+						<p:panelGrid columns="2" cellpadding="10" style="width:100%;">
+							<p:outputLabel for="windowtitle" value="Ecran"/>
+							<p:inputText id="windowtitle" value="#{preanalyseCtrl.windowTitle}"/>
+							<p:outputLabel for="windowdescription" value="Description"/>
+							<p:inputTextarea id="windowdescription" value="#{preanalyseCtrl.windowDescription}"/>
+							<p:commandButton id="winbtn" widgetVar="winbtn" ajax="true" value="Ajouter écran" actionListener="#{preanalyseCtrl.addWindow}" update="@form"/>
+						</p:panelGrid>
+						<p:dataTable emptyMessage="" id="windowTable" widgetVar="windowTable" value="#{preanalyseCtrl.windows}" var ="win">
+						<p:column headerText="Titre">
+								#{win.title}
+							</p:column>
+							<p:column headerText="Description">
+								#{win.description}
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+					<p:panel header="Actions et traitements" toggleable="true">
+						<p:panelGrid columns="2" cellpadding="10" style="width:100%;">
+							<p:outputLabel for="actiontitle" value="Traitement"/>
+							<p:inputText id="actiontitle" value="#{preanalyseCtrl.actionTitle}"/>
+							<p:outputLabel for="actiondescription" value="Description"/>
+							<p:inputTextarea id="actiondescription" value="#{preanalyseCtrl.actionDescription}"/>
+							<p:commandButton id="actbtn" widgetVar="actbtn" ajax="true" value="Ajouter action" actionListener="#{preanalyseCtrl.addAction}" update="@form"/>
+						</p:panelGrid>
+						<p:dataTable emptyMessage="" id="actionTable" widgetVar="actionTable" value="#{preanalyseCtrl.actions}" var ="act">
+						<p:column headerText="Titre">
+								#{act.title}
+							</p:column>
+							<p:column headerText="Description">
+								#{act.description}
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+					<p:panel header="Etats et documents" toggleable="true">
+						<p:panelGrid columns="2" cellpadding="10" style="width:100%;">
+							<p:outputLabel for="documenttitle" value="Document"/>
+							<p:inputText id="documenttitle" value="#{preanalyseCtrl.documentTitle}"/>
+							<p:outputLabel for="documentdescription" value="Description"/>
+							<p:inputTextarea id="documentdescription" value="#{preanalyseCtrl.documentDescription}"/>
+							<p:commandButton id="docbtn" widgetVar="docbtn" ajax="true" value="Ajouter document" actionListener="#{preanalyseCtrl.addDocument}" update="@form"/>
+						</p:panelGrid>
+						<p:dataTable emptyMessage="" id="documentTable" widgetVar="documentTable" value="#{preanalyseCtrl.documents}" var ="doc">
+						<p:column headerText="Titre">
+								#{doc.title}
+							</p:column>
+							<p:column headerText="Description">
+								#{doc.description}
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+					<p:panel header="Processus" toggleable="true">
+						<p:panelGrid columns="2" cellpadding="10" style="width:100%;">
+							<p:outputLabel for="processtitle" value="Processus"/>
+							<p:inputText id="processtitle" value="#{preanalyseCtrl.processTitle}"/>
+							<p:outputLabel for="processdescription" value="Description"/>
+							<p:inputTextarea id="processdescription" value="#{preanalyseCtrl.processDescription}"/>
+							<p:commandButton id="prcbtn" widgetVar="prcbtn" ajax="true" value="Ajouter processus" actionListener="#{preanalyseCtrl.addProcess}" update="@form"/>
+						</p:panelGrid>
+						<p:dataTable emptyMessage="" id="processTable" widgetVar="processTable" value="#{preanalyseCtrl.processes}" var ="prc">
+						<p:column headerText="Titre">
+								#{prc.title}
+							</p:column>
+							<p:column headerText="Description">
+								#{prc.description}
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+					<p:panel header="Rôles et utilisateurs" toggleable="true">
+						<p:panelGrid columns="2" cellpadding="10" style="width:100%;">
+							<p:outputLabel for="roletitle" value="Role"/>
+							<p:inputText id="roletitle" value="#{preanalyseCtrl.roleTitle}"/>
+							<p:outputLabel for="roledescription" value="Description"/>
+							<p:inputTextarea id="roledescription" value="#{preanalyseCtrl.roleDescription}"/>
+							<p:commandButton id="rolbtn" widgetVar="rolbtn" ajax="true" value="Ajouter rôle" actionListener="#{preanalyseCtrl.addRole}" update="@form"/>
+						</p:panelGrid>
+						<p:dataTable emptyMessage="" id="roleTable" widgetVar="roleTable" value="#{preanalyseCtrl.roles}" var ="rol">
+						<p:column headerText="Titre">
+								#{rol.title}
+							</p:column>
+							<p:column headerText="Description">
+								#{rol.description}
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+				</p:fieldset>
+				    <p:commandButton value="Imprimer" type="button" icon="ui-icon-print">  
+							<p:printer target="analysisfieldset" />
+					</p:commandButton>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez faire l'inventaire des différents éléments de conception de votre application <br/>
+		Les éléments saisis sur cet écran servirons d'aide mémoire à travers les différentes étapes
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

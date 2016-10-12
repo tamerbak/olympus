@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+	<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">Conception des Procédures
+				<small>Synthèse</small></h3>
+			</div>
+		</div>
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="Nouveau" action="processes" icon="ui-icon-document" />
+				<p:menuitem ajax="false" value="Etape suivante" action="#{processCtrl.next}" icon="ui-icon-seek-end" />
+			</p:menubar>
+			<p:confirmDialog id="dependencies" message="êtes vous sûr de vouloir supprimer cette procédure ?"  
+                header="Suppression de la procédure" severity="alert" widgetVar="dependencies">
+                <h3>Suppression d'une procédure</h3>
+				<p><b>Attention ! </b>&nbsp;La suppression #{processCtrl.toDelete.title} est définitive </p>
+				<p>Voulez vous continuer ?</p>
+				<p:commandButton value="Supprimer" actionListener="#{processCtrl.doDelete}" update="@form" oncomplete="dependencies.hide()" />&nbsp;&nbsp;
+				<p:commandButton value="Annuler" actionListener="#{processCtrl.cancelDelete}" update="@form" oncomplete="dependencies.hide()" /> 
+			</p:confirmDialog>
+			<p:dataGrid var="act" value="#{processCtrl.processes}" columns="3"  
+        rows="4" paginator="true"  emptyMessage=""
+        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        rowsPerPageTemplate="9,12,15">
+        		<p:panel header="#{act.title}" style="text-align:center">  
+  		        	<center>
+     		        	<p:commandButton  value="Supprimer" icon="ui-icon-close" 
+							action="#{processCtrl.constructDependencies}" oncomplete="dependencies.show()">
+							<f:setPropertyActionListener value="#{act}"   
+                            target="#{processCtrl.toDelete}"  />
+						</p:commandButton>
+     		        </center>  
+        		</p:panel>
+        		
+        	</p:dataGrid>
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s7.png" />
+		</p:notificationBar>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez consulter l'ensemble des procédures créés
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>

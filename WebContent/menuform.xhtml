@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{msg['menuform.title']}
+				<small>#{msg['menuform.subtitle']}</small></h3>
+			</div>
+		</div>		
+			
+		<div class="table">
+			<p:menubar>
+				<p:menuitem value="#{msg['general.save']}" ajax="false"  actionListener="#{menuCtrl.saveFormMenu}" icon="ui-icon-disk" update="@form" />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="#{menuCtrl.next}" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:fieldset legend="#{msg['menuform.new.element']}">
+				<p:panelGrid style="width:100%" columns="2">   
+					<p:outputLabel value="#{msg['menuform.label.screen']}" />
+					<p:selectOneMenu id="sourcecrene" value="#{menuCtrl.selectedSource}" filter="true" filterMatchMode="contains">
+						<f:selectItems value="#{menuCtrl.screens}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}"/>
+					</p:selectOneMenu> 
+					<p:outputLabel value="#{msg['menuform.label.form']}" />
+					<p:selectOneMenu id="targetcrene" value="#{menuCtrl.selectedTarget}"  filter="true" filterMatchMode="contains">
+						<f:selectItems value="#{menuCtrl.formScreens}" var="scr" itemLabel="#{scr.title}" itemValue="#{scr.title}"/>
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</p:fieldset>
+			
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s8.png" />
+		</p:notificationBar>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez créer le menu de l'application <br />
+		Le menu a deux niveaux, le premier niveau concerne les rubriques alors que le second représente les écrans accessibles 
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>

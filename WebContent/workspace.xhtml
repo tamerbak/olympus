@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">  
+		<div class="top-bar">
+				<h1>Définition du tableau de bord</h1>
+			</div><br />
+			<div class="select-bar">
+		    	<div class="breadcrumbs">Création des widgets s'affichants sur le tableau de bord de l'application de l'application </div>
+			</div>
+			
+			
+			<div class="table">
+			<p:menubar>
+				<p:menuitem value="Sauvegarder" actionListener="#{workspaceCtrl.saveWidget}" icon="ui-icon-disk" oncomplete="wiz.loadStep(wiz.cfg.steps [0], true)" update="@form" />
+				<p:menuitem ajax="false" value="Etape suivante" action="wssynthesis" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:wizard widgetVar="wiz">
+				<p:tab id="generalsetup" title="Paramétres généraux">
+					<p:panelGrid columns="2" style="width:100%">
+						<p:outputLabel for="widgettitle" value="Titre"/>
+						<p:inputText id="widgettitle" value="#{workspaceCtrl.title}"/>
+						<p:outputLabel for="widgettype" value="Type"/>
+						<p:selectOneMenu id="widgettype" value="#{workspaceCtrl.selectedType}"  effect="fade" style="width:160px;"  >
+								<p:ajax update="entattributes,piechartpanel,tableattributes,tablepanel" event="change" listener="#{workspaceCtrl.typeChanged}" ></p:ajax>
+								<f:selectItem itemLabel="Tableau" itemValue="T"></f:selectItem>
+								<f:selectItem itemLabel="Courbes" itemValue="C"></f:selectItem>
+								<f:selectItem itemLabel="Camembert" itemValue="P"></f:selectItem>
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</p:tab>
+				<p:tab id="datainput" title="Données">
+					<p:fieldset>
+						<p:panelGrid id="piechartpanel" columns="2" style="width:100%" rendered="#{!workspaceCtrl.table}">
+							<p:outputLabel for="entities" value="Entitées"/>
+							<p:selectOneMenu value="#{workspaceCtrl.selectedEntity}" id="entities" effect="fade" style="width:160px;">
+								<p:ajax update="entattributes,xlabel,yvalue" event="change" listener="#{workspaceCtrl.entityChanged}" ></p:ajax>
+								<f:selectItems value="#{workspaceCtrl.entities}" var="ent" itemLabel="#{ent.name}" itemValue="#{ent.dataReference}"  ></f:selectItems>
+							</p:selectOneMenu>
+							<p:outputLabel for="xlabel" value="Label"/>
+							<p:selectOneMenu value="#{workspaceCtrl.selectedLabel}" id="xlabel" effect="fade" style="width:160px;">
+								<f:selectItems value="#{workspaceCtrl.pieLabels}" var="att" itemLabel="#{att.attribute}" itemValue="#{att.dataReference}"  ></f:selectItems>
+							</p:selectOneMenu>
+							<p:outputLabel for="yvalue" value="Valeur"/>
+							<p:selectOneMenu value="#{workspaceCtrl.selectedValue}" id="yvalue" effect="fade" style="width:160px;">
+								<f:selectItems value="#{workspaceCtrl.pieValues}" var="att" itemLabel="#{att.attribute}" itemValue="#{att.dataReference}"  ></f:selectItems>
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panelGrid id="tablepanel" columns="2" style="width:100%" rendered="#{workspaceCtrl.table}">
+							<p:outputLabel for="tentities" value="Entitées"/>
+							<p:selectOneMenu value="#{workspaceCtrl.selectedEntity}" id="tentities" effect="fade" style="width:160px;">
+								<p:ajax update="tableattributes" event="change" listener="#{workspaceCtrl.entityChanged}" ></p:ajax>
+								<f:selectItems value="#{workspaceCtrl.entities}" var="ent" itemLabel="#{ent.name}" itemValue="#{ent.dataReference}"  ></f:selectItems>
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:dataTable id="entattributes" value="#{workspaceCtrl.sEntity.attributes}" var="att" widgetvar="entattributes" rendered="#{!workspaceCtrl.table}" emptyMessage="">
+							<p:column headerText="Champs">
+								<h:outputText value="#{att.attribute}"/>
+							</p:column>
+							<p:column headerText="Type">
+								<h:outputText value="#{att.typeLabel}"/>
+							</p:column>
+							
+						</p:dataTable>
+						<p:dataTable id="tableattributes" value="#{workspaceCtrl.sEntity.attributes}" var="att" widgetvar="tableattributes" rendered="#{workspaceCtrl.table}"
+							rowKey="#{att.dataReference}" selectionMode="multiple" selection="#{workspaceCtrl.selectedEntities}" emptyMessage="">
+							<p:column headerText="Champs">
+								<h:outputText value="#{att.attribute}"/>
+							</p:column>
+							<p:column headerText="Type">
+								<h:outputText value="#{att.typeLabel}"/>
+							</p:column>
+							
+						</p:dataTable>
+					</p:fieldset>
+				</p:tab>
+			</p:wizard>
+			
+			
+			</div>
+
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s10.png" />
+		</p:notificationBar>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez créer les widgets du tableau de bord de l'application <br />
+		Les widgets sont de type graphe, camembert ou tableau. 
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>

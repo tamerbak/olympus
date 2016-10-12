@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:rich="http://richfaces.org/rich"  xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/master.xhtml">
+	<ui:define name="contenu">
+	<h:form id="form">
+		<div class="row-fluid">
+			<div class="col-md-12">
+				<h3 class="page-title">#{msg['newalert.title']}
+					<small>#{msg['newalert.subtitle']}</small>
+				</h3>
+			</div>
+		</div>	
+			
+		<div class="table">
+			<p:menubar>
+				<p:menuitem ajax="false" value="#{msg['general.save']}" action="#{alertsCtrl.saveAlert}" icon="ui-icon-disk" />
+				<p:menuitem ajax="false" value="#{msg['general.next.step']}" action="alerts" icon="ui-icon-seek-end" />
+			</p:menubar>
+			
+			<p:panelGrid columns="2" style="width:100%">
+				<f:facet name="header">#{msg['newalert.subtitle']}</f:facet>
+				<p:outputLabel value="#{msg['newalert.label.title']}"/>
+				<p:inputText id="titre" value="#{alertsCtrl.current.titre}"/>
+				<p:outputLabel value="#{msg['newalert.label.description']}"/>
+				<p:inputTextarea id="description" value="#{alertsCtrl.current.description}" autoResize="false"/>
+				<p:outputLabel value="#{msg['newalert.label.type']}"/>
+				<p:selectOneMenu id="insert" value="#{alertsCtrl.current.insert}">
+					<f:selectItem itemLabel="Déclenché à la création" itemValue="true"/>
+					<f:selectItem itemLabel="Déclenché à l'activation d'une action" itemValue="false"/>
+				</p:selectOneMenu>
+				<p:outputLabel value="#{msg['newalert.label.screen']}"/>
+				<p:selectOneMenu id="cwindow" value="#{alertsCtrl.selectedWindow}">
+					<f:selectItems value="#{alertsCtrl.windows}" var="cwin" itemLabel="#{cwin.title}" itemValue="#{cwin.title}" /> 
+				</p:selectOneMenu>
+				<p:outputLabel value="#{msg['newalert.label.concerned.user']}"/>
+				<p:selectOneMenu id="crole" value="#{alertsCtrl.selectedRole}">
+					<f:selectItems value="#{alertsCtrl.roles}" var="crl" itemLabel="#{crl.role}" itemValue="#{crl.role}" /> 
+				</p:selectOneMenu>
+			</p:panelGrid>
+			
+		</div>
+		
+	</h:form>
+	</ui:define>
+	<ui:define name="help">
+	<h:form>
+		<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top" style="align:center; width:100%">  
+			<p:graphicImage value="/img/barre/s4.png" />
+		</p:notificationBar>
+		<strong class="h">Aide</strong>
+		<div class="box">
+		Sur cet écran vous pouvez consulter l'ensemble des écrans de votre application <br />
+		Vous pouvez en créer, les modifier et les supprimer 
+		</div>
+		<strong class="h">Feuille de route</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" actionListener="#{preanalyseCtrl.loadRoadMap}" oncomplete="roadmap.show()" update="roadmap" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" oncomplete="roadmap.hide()"   />
+		</div>
+		<p:dialog id="roadmap" widgetVar="roadmap" header="Feuille de route">
+			<p:tree value="#{preanalyseCtrl.root}" var="node" id="tree">  
+	        <p:treeNode id="treeNode" icon="#{node.type}">  
+	            <h:outputText value="#{node.name}"  id="lblNode"/>  
+	        </p:treeNode>  
+	    	</p:tree> 
+		</p:dialog>
+		<strong class="h">Avancement</strong>
+		<div class="box">
+			<p:commandButton value="Montrer" icon="ui-icon-pin-s" onclick="bar.show()" type="button" />  
+			<p:commandButton value="Cacher" icon="ui-icon-pin-w" onclick="bar.hide()" type="button" />
+		</div>
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>
